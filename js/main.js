@@ -8,10 +8,10 @@ var rarityOfSpawningStars = 0.99;       // the higher the more rare. values betw
 var rarityOfSpawningEnemies = 0.99;     // the higher the more rare. values between 0  and 1
 var rarityOfSpawningOxygenTanks = 0.999;
 //PLAYER
-var playerFrameHeight = 48;  //depends on the tileSprite
-var playerFrameWidth = 32;   //depends on the tileSprite
+var playerFrameHeight = 90;  //depends on the tileSprite
+var playerFrameWidth = 90;   //depends on the tileSprite
 var playerInitialPositionX = gameWidth/2;
-var playerInitialPositionY = gameHeight/2;
+var playerInitialPositionY = gameHeight - 100;
 var playerFrameRate = 10;
 var playerVelocityLeft = -250;
 var playerVelocityRight = 250;
@@ -39,7 +39,7 @@ function preload() {
     game.load.image('diamond','assets/diamond.png');
     game.load.image('bsquadron', 'assets/bsquadron1.png');
     game.load.image('oxygen','assets/firstaid.png');
-    game.load.spritesheet('dude', 'assets/dude.png', playerFrameWidth, playerFrameHeight);
+    game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);
 
 }
 
@@ -72,11 +72,11 @@ function create() {
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
-    player.body.gravity.y = 50;
+    // player.body.gravity.y = 50;
 
     //  Our two animations, walking left and right.
-    player.animations.add('left', [0, 1, 2, 3], playerFrameRate, true);  //(name,frames,frameRate,loop)
-    player.animations.add('right', [5, 6, 7, 8], playerFrameRate, true);
+    player.animations.add('left', [0, 1, 2, 3,4,5,6,7], playerFrameRate, true);  //(name,frames,frameRate,loop)
+    player.animations.add('right', [8,9,10,11,12,13,14,15], playerFrameRate, true);
 
     //  Stars to collect
     stars = game.add.group();
@@ -86,7 +86,7 @@ function create() {
     enemies= game.add.group();
     enemies.enableBody = true;
 
-    //  The baddies!
+    //  Oxygen
     oxygenTanks = game.add.group();
     oxygenTanks.enableBody = true;
     oxygenTanks.physicsBodyType = Phaser.Physics.ARCADE; 
@@ -119,7 +119,7 @@ function createEnemy (x, y, typeOfEnemy) {
     enemy.x= x;
     enemy.y= y;
 
-    var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+//    var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
     //enemy.body.collideWorldBounds = true;
     enemy.body.velocity.y = 100;
 }
@@ -130,21 +130,21 @@ function update() {
     counter= counter+1;
     ocean.tilePosition.y += backgroundVelocity;
     depth -= 1;
-    depthText.text= 'Depth: ' + counter + 'm';
-    if(depth == 9900){
+    depthText.text= 'Depth: ' + depth + 'm';
+    if(depth == 9000){
         line = new Phaser.Line(0,0, gameWidth,0);
-        alert("answer this question");
-      var ledge= platforms.create(0, 32, 'ground');
-      oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
-      ledge.body.immovable = true;
-      ledge.body.velocity.y=33;
+        console.log("answer this question");
+      // var ledge= platforms.create(0, 32, 'ground');
+      // oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
+      // ledge.body.immovable = true;
+      // ledge.body.velocity.y=33;
     }
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
     //  Collide the player and the stars with the platforms
-    var hitPlatform = game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
+    // var hitPlatform = game.physics.arcade.collide(player, platforms);
+    // game.physics.arcade.collide(stars, platforms);
 
     //  Checks to see if the player overlaps with any of the stars or enemies or oxygen tanks
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
@@ -153,7 +153,7 @@ function update() {
 
     //  creating stars    
     if(Math.random() > rarityOfSpawningStars){
-      var star = stars.create(Math.random()*799 + 2, 0, 'star');       
+      var star = stars.create(Math.random()*gameWidth + 2, 0, 'star');       
       star.body.velocity.y = 50;
     }
     //creating enemies
@@ -187,12 +187,12 @@ function update() {
     }
     
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown)
-    {
-      player.body.velocity.y = playerVelocityUp;
-    }else if(cursors.down.isDown){
-        player.body.velocity.y = playerVelocityDown;
-    }
+    // if (cursors.up.isDown)
+    // {
+      // player.body.velocity.y = playerVelocityUp;
+    // }else if(cursors.down.isDown){
+        // player.body.velocity.y = playerVelocityDown;
+    // }
 
 }
 
@@ -208,10 +208,10 @@ function collectStar (player, star) {
 
 function deathByEnemies (player, enemy){
     enemy.kill();
-    alert("YOU DIED.")
+    console.log("YOU DIED.")
 }
 
 function collectOxygen (player, oxygen){
     oxygen.kill();
-    alert("Oxygen increased by 10%");
+    console.log("Oxygen increased by 10%");
 }
