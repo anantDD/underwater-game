@@ -37,7 +37,7 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.image('diamond','assets/diamond.png');
-    game.load.image('bsquadron', 'assets/bsquadron1.png');
+    game.load.image('bsquadron', 'assets/3703.png');
     game.load.image('oxygen','assets/firstaid.png');
     game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);  //https://www.artstation.com/artwork/e4eED
 
@@ -53,6 +53,7 @@ var score = 0;
 var scoreText;
 var depth = 9999;
 var depthText;
+var lineS;
 
 function create() {
 
@@ -86,6 +87,10 @@ function create() {
     enemies= game.add.group();
     enemies.enableBody = true;
 
+    // Lines
+    lineS =game.add.group();
+    lineS.enableBody = true;
+
     //  Oxygen
     oxygenTanks = game.add.group();
     oxygenTanks.enableBody = true;
@@ -97,9 +102,40 @@ function create() {
     depthText = game.add.text(gameWidth - 200, scorePositionY, 'Depth: 9999m', {fontSize: '32px', fill: '#aa0'});
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
+/*
+    // create a group for our lines
+    linesGroup = game.add.group();
+    linesGroup.enableBody = true;
+    linesGroup.physicsBodyType = Phaser.Physics.ARCADE;
+    // linesGroup.body.velocity.y= 30;
+
+// created on the world
+    let graphics = this.game.add.graphics(0,10); // adds to the world stage
+    graphics.lineStyle(2, 0xFFFFFF, 1);
+    graphics.lineTo(gameWidth, 1);
+    linesGroup.add(graphics) // moves from world stage to group as a child
+// create an instance of graphics, then add it to a group
+    let graphics2 = this.game.make.graphics();
+    graphics2.lineStyle(2, 0xFFFFFF, 1);
+//graphics2.drawRect(500, 200, 250, 250);
+    linesGroup.add(graphics2); // added directly to the group as a child
+    */
+   
+     
     
 }
+function createLine(){
+     var graphics = game.add.graphics(0,0);
+    graphics.lineStyle(2, 0xffd9ff,1);
+   // graphics.moveTo(0,50);
+    graphics.lineTo(gameWidth ,0);
+     levelLine = game.add.sprite(0,0, graphics.generateTexture());
+    // levelLine.anchor.set(0);
+    graphics.destroy();
+    game.physics.arcade.enable(levelLine);
+     levelLine.body.velocity.y = 30;
 
+}
 function createOxygenTank () {
 
     
@@ -127,17 +163,16 @@ function createEnemy (x, y, typeOfEnemy) {
 
 function update() {
     //  scrolling the background
+    // levelLine.rotation += 0.01;
+
     counter= counter+1;
     ocean.tilePosition.y += backgroundVelocity;
     depth -= 1;
     depthText.text= 'Depth: ' + depth + 'm';
-    if(depth == 9000){
-        line = new Phaser.Line(0,0, gameWidth,0);
+    if(depth == 9900){
         console.log("answer this question");
-      // var ledge= platforms.create(0, 32, 'ground');
-      // oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
-      // ledge.body.immovable = true;
-      // ledge.body.velocity.y=33;
+        createLine();
+      
     }
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
