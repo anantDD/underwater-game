@@ -39,7 +39,7 @@ function preload() {
     game.load.image('diamond','assets/diamond.png');
     game.load.image('bsquadron', 'assets/bsquadron1.png');
     game.load.image('oxygen','assets/firstaid.png');
-    game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);
+    game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);  //https://www.artstation.com/artwork/e4eED
 
 }
 
