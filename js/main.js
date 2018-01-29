@@ -1,6 +1,11 @@
-var gameHeight= 600;
-var gameWidth= 400;
+var gameHeight= window.innerHeight;
+var gameWidth= window.innerWidth>400 ? 400 : window.screen.availWidth;
+let el=document.getElementById('gameDiv');
+el.style.width = gameWidth + "px" ;
 var backgroundVelocity = 1.5;
+
+var firstLevelDepth = 9900;
+var secondLevelDepth = 9500;
 
 var starVelocity = 50;
 var monsterVelocity = 20;
@@ -44,6 +49,7 @@ function preload() {
 }
 
 var player;
+var levelLine;
 var platforms;
 var cursors;
 var ocean;
@@ -54,6 +60,7 @@ var scoreText;
 var depth = 9999;
 var depthText;
 var lineS;
+
 
 function create() {
 
@@ -90,7 +97,8 @@ function create() {
     // Lines
     lineS =game.add.group();
     lineS.enableBody = true;
-
+    levelLines = game.add.group();
+    levelLines.enableBody = true;
     //  Oxygen
     oxygenTanks = game.add.group();
     oxygenTanks.enableBody = true;
@@ -109,28 +117,29 @@ function create() {
     linesGroup.physicsBodyType = Phaser.Physics.ARCADE;
     // linesGroup.body.velocity.y= 30;
 
-// created on the world
+    // created on the world
     let graphics = this.game.add.graphics(0,10); // adds to the world stage
     graphics.lineStyle(2, 0xFFFFFF, 1);
     graphics.lineTo(gameWidth, 1);
     linesGroup.add(graphics) // moves from world stage to group as a child
-// create an instance of graphics, then add it to a group
+    // create an instance of graphics, then add it to a group
     let graphics2 = this.game.make.graphics();
     graphics2.lineStyle(2, 0xFFFFFF, 1);
-//graphics2.drawRect(500, 200, 250, 250);
+    //graphics2.drawRect(500, 200, 250, 250);
     linesGroup.add(graphics2); // added directly to the group as a child
-    */
+*/
 }
 function createLine(){
      var graphics = game.add.graphics(0,0);
     graphics.lineStyle(2, 0xffd9ff,1);
    // graphics.moveTo(0,50);
     graphics.lineTo(gameWidth ,0);
-     levelLine = game.add.sprite(0,0, graphics.generateTexture());
+    levelLine = game.add.sprite(0,0, graphics.generateTexture());
     // levelLine.anchor.set(0);
+    // levelLines.add(levelLine);
     graphics.destroy();
     game.physics.arcade.enable(levelLine);
-     levelLine.body.velocity.y = 30;
+    levelLine.body.velocity.y = 100;
 
 }
 function createOxygenTank () {
@@ -152,40 +161,40 @@ function createEnemy (x, y, typeOfEnemy) {
     enemy.x= x;
     enemy.y= y;
 
-//    var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+    //var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
     //enemy.body.collideWorldBounds = true;
     enemy.body.velocity.y = 100;
 }
 
 
 function update() {
-    //  scrolling the background
     // levelLine.rotation += 0.01;
-
     counter= counter+1;
+    //  scrolling the background
     ocean.tilePosition.y += backgroundVelocity;
     depth -= 1;
     depthText.text= 'Depth: ' + depth + 'm';
-    if(depth == 9900){
-        console.log("answer this question");
+    if(depth ==firstLevelDepth+50 || depth ==secondLevelDepth){
         createLine();
-        // el = document.getElementById("overlay");
-        openMathsProblemScreen(depth);
-        game.paused = true;
+        console.log("line falls");
     }
+    if(depth == firstLevelDepth || depth == secondLevelDepth){
+        
+    }
+
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
-    //  Collide the player and the stars with the platforms
+    // Collide the player and the stars with the platforms
     // var hitPlatform = game.physics.arcade.collide(player, platforms);
     // game.physics.arcade.collide(stars, platforms);
 
-    //  Checks to see if the player overlaps with any of the stars or enemies or oxygen tanks
+    // Checks to see if the player overlaps with any of the stars or enemies or oxygen tanks
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, enemies, deathByEnemies, null, this);
     game.physics.arcade.overlap(player, oxygenTanks, collectOxygen, null, this);
-
-    //  creating stars    
+    game.physics.arcade.overlap(player, levelLine, levelReached, null, this);
+    // creating stars    
     if(Math.random() > rarityOfSpawningStars){
       var star = stars.create(Math.random()*gameWidth + 2, 0, 'star');       
       star.body.velocity.y = 50;
@@ -198,10 +207,9 @@ function update() {
     if(Math.random() >rarityOfSpawningOxygenTanks){
        createOxygenTank();
     }
-
    
     //  Keys for player movement.
-    if (cursors.left.isDown)
+    if (cursors.left.isDown )
     {
         //  Move to the left
       player.body.velocity.x = playerVelocityLeft;
@@ -219,6 +227,18 @@ function update() {
       // player.animations.stop();
       // player.frame = 4;
     }
+    if (game.input.pointer1.isDown) {
+      if (game.input.x < (game.width / 2)) { //  Move to the left     
+        player.body.velocity.x = -150;
+        player.animations.play('left');
+      }
+    if (game.input.x >= (game.width / 2) ) { //  Move to the right    
+        player.body.velocity.x = 150;
+        player.animations.play('right');
+      }
+    
+   }
+   // onSwipe();
     
     //  Allow the player to jump if they are touching the ground.
     // if (cursors.up.isDown)
@@ -301,3 +321,16 @@ function openMathsProblemScreen(){
 
 }
 
+function onSwipe() {
+    return (Phaser.Point.distance(game.input.activePointer.position, game.input.activePointer.positionDown) > 150 && game.input.activePointer.duration > 100 && game.input.activePointer.duration < 250);
+}
+
+function levelReached(){
+    console.log("answer this question");
+    levelLine.kill();
+    
+       
+        // el = document.getElementById("overlay");
+    openMathsProblemScreen(depth);
+    game.paused = true;
+}

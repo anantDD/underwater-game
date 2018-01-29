@@ -2,40 +2,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
 
-	<title>first game</title>
-	<link rel="stylesheet" type="text/css" href="main.css">
+  <title>first game</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
 	<!-- <script type="text/javascript" src="js/Phaser.min.js"></script> -->
 	   <!-- <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script> -->
-	   <script>
+  <script>
 		
-	   function overlay(html) {
-    	 	el = document.getElementById("overlay");
-    	 	el.innerHTML = html;
-    		el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+    function overlay(html) {
+      el = document.getElementById("overlay");
+      
+      el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
     		window.scrollTo(0, 0);
-		}
-	</script>	
-	<script type="text/javascript" src="js/phaser.js"></script>
-
-	<!-- <script type="text/javascript" src="js/Phaser.js"></script>    -->
-
-	<style>
-		
-	
-	</style>
+    		game.paused= false;
+	}
+  </script>	
+  <script type="text/javascript" src="js/phaser.js">
+  </script>
 </head>
+
 <body>
-	<div id="gameDiv">
-		<div id="overlay">
-			<div id="shopContent"></div>
-		</div>
+  <div id="gameDiv">
+    <div id="overlay">
+      <button class="close" onclick="overlay()">close</button>
+	  <div id="shopContent"></div>
+	    <h1>Calculate the height</h1>
+	    <div id="calculationDisplay">
+	      <div id="minuend">
+	    	<div class="box">
+	    		9
+	    	</div>
+	    	<div class="box">
+	    		9
+	    	</div>
+	    	<div class="box">
+	    		9
+	    	</div>
+	    	<div class="box">
+	    		9
+	    	</div>
+	      </div>
+	      <div id="subtrahend">
+	      	<span class="minusSign">
+	      	-
+	      	</span>
+	      	<div class="box">
+	    		9
+	    	</div>
+	    	<div class="box">
+	    		0
+	    	</div>
+	    	<div class="box">
+	    		0
+	    	</div>
+	    	<div class="box">
+	    		0
+	    	</div>
+	      </div>
+	      <div id="resultSubtraction">
+	      	<div class="box">
+	    		4
+	    	</div>
+	    	<div class="box">
+	    		3
+	    	</div>
+	    	<div class="box">
+	    		2
+	    	</div>
+	    	<div class="box">
+	    		1
+	    	</div>
+	      </div>
+	  	</div> 
+	  	<div id="numberButtons">
+	  	  <div class="row">
+	  	    <button type="">1</button>
+	  	    <button type="">2</button>
+	  	    <button type="">3</button>
+	  	  </div>
+	  	  <div class="row">
+	  	    <button type="">4</button>
+	  	    <button type="">5</button>
+	  	    <button type="">6</button>
+	  	  </div>
+	  	  <div class="row">
+	  	    <button type="">7</button>
+	  	    <button type="">8</button>
+	  	    <button type="">9</button>
+	  	  </div>
+	  	  <div class="row">
+	  	    <button type="">0</button>
+	  	  </div>
+	  	</div> 
+	  </div>
 	</div>
 	
 		
-	<script type="text/javascript" src="js/main.js"></script>
-	
+  <script type="text/javascript" src="js/main.js">
+  </script>	
 </body>
 </html>

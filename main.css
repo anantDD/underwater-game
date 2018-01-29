@@ -1,75 +1,110 @@
+body{
+  margin: 0;
+}
 #gameDiv{
-		position:relative;
-		width:400px;
-		margin:auto;
-	}
-		#overlay {
-        background-color: #fff;
-        visibility: hidden;
-        position: absolute;
-        top: 20px;
-        bottom: 20px;
-        width:88%;
-        margin-left: 6%;
-        text-align:center;
-        
-        z-index: 1000;
-        overflow-y: scroll;
-        box-shadow: -1px 2px 15px -1px #000;
-    }
- 
-    #overlay div {
-        margin: auto;
-        background-color: #00f;
-        padding:15px;
-    }
- 
-    #shopContent h3 {
-        display: inline;
-    }
- 
-    #shopContent ul {
-        list-style-type: none;
-        padding-left: 0px;
-    }
- 
-    #shopContent li {
-        margin-bottom: 20px;
-    }
- 
-    #shopContent p {
-        text-align: left;
-    }
- 
-    #shopContent p img {
-        float: left;
-        width: 60px;
-        height: auto;
-        padding-right: 15px;
-        padding-bottom: 15px;
-    }
- 
-    #shopContent ul button {
-        background-color: #2ecc71;
-        color: #fff;
-        border: 1px solid #fff;
-        font-size: 1em;
-        font-weight: bold;
-        padding: 15px 15px;
-    }
- 
-    .shurikenPrice {
-        height: 20px;
-        position: relative;
-        top: 5px;
-    }
- 
-    .close {
-        width: 50px;
-        height: 50px;
-        position: fixed;
-        background-image: url(assets/close.png);
-        right: 20px;
-        top: 20px;
-        border: none;
-    }
+  position: relative;
+  
+  margin: auto;
+}
+#overlay{
+  background-color: #fff;
+  visibility: hidden;
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  width:88%;
+  margin-left: 6%;
+  text-align:center;
+  z-index: 1000;
+  overflow-y: scroll;
+  box-shadow: -1px 2px 15px -1px #000;
+}
+#overlay div{
+  margin: auto;
+  background-color: white;
+  padding:15px;
+}
+#shopContent h3{
+  display: inline;
+}
+
+#shopContent ul{
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+#shopContent li{
+  margin-bottom: 20px;
+}
+
+#shopContent p{
+  text-align: left;
+}
+
+#shopContent p img{
+  float: left;
+  width: 60px;
+  height: auto;
+  padding-right: 15px;
+  padding-bottom: 15px;
+}
+
+#shopContent ul button{
+  background-color: #2ecc71;
+  color: #fff;
+  border: 1px solid #fff;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 15px 15px;
+}
+
+.shurikenPrice{
+  height: 20px;
+  position: relative;
+  top: 5px;
+}
+
+.close{
+  width: 50px;
+  height: 50px;
+  
+  border: solid 1px black;
+}
+
+#calculationDisplay{
+  border: solid 1px black;
+
+}
+#calculationDisplay > div{
+  margin: 3px auto;
+}
+#minuend{
+
+}
+#subtrahend{
+  margin-bottom:10px !important;
+}
+#subtrahend .minusSign{
+  position: absolute;
+  left: 50px;
+}
+#resultSubtraction{
+
+  padding-top: 20px !important;
+  border-top: solid 1px black;
+}
+.box{
+  border: solid 1px black;
+  display: inline;
+}
+
+#numberButtons{
+  border: solid 1px black;
+}
+#numberButtons .row{
+  padding: 2px !important;
+}
+#numberButtons button{
+  width: 15%;
+  height: 2em;
+}
