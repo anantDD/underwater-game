@@ -29,7 +29,7 @@ var line;
 var counter=0;
 
 
-var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update });
 
 function preload() {
 
@@ -62,7 +62,7 @@ function create() {
 
     //  A simple background for our game
     ocean =game.add.tileSprite(0, 0, gameWidth, gameHeight, 'ocean');
-
+    // ocean.anchor.setTo(100,100);
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
     //  We will enable physics for any object that is created in this group
@@ -120,9 +120,6 @@ function create() {
 //graphics2.drawRect(500, 200, 250, 250);
     linesGroup.add(graphics2); // added directly to the group as a child
     */
-   
-     
-    
 }
 function createLine(){
      var graphics = game.add.graphics(0,0);
@@ -172,7 +169,9 @@ function update() {
     if(depth == 9900){
         console.log("answer this question");
         createLine();
-      
+        // el = document.getElementById("overlay");
+        openMathsProblemScreen(depth);
+        game.paused = true;
     }
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
@@ -250,3 +249,55 @@ function collectOxygen (player, oxygen){
     oxygen.kill();
     console.log("Oxygen increased by 10%");
 }
+
+function openMathsProblemScreen(){
+    /*$canvas = document.getElementsByTagName('canvas')[0];
+    console.log($canvas);
+    x= document.createElement('div');
+    x.innerHTML = 'content';
+
+    // $canvas.append("<h1> hi</h1>");
+    $canvas.appendChild(x);
+    */
+    var html = "<button class = 'close' onclick = 'overlay()'></button><ul>";
+ 
+    //Note: this is using code that is not present in this example file. Please see
+    //http://www.joshmorony.com/how-to-create-ios-in-app-purchases-with-phonegap-build/
+    //For information on how to include In App Purchases. Otherwise you can just remove this
+   
+    //Add all the normal items
+    html += "<li>" +
+    "<h3>Pink Headband</h3>" +
+    "<p><img src = 'assets/buypinkheadband.png' /> Real ninjas wear pink! Let the colour of femininity and tenderness guide you on your path to greatness.</p>" +
+    "<button id='pinkHeadband' type='button' " +
+    "onclick='purchaseHeadband(\"pinkHeadband\", 5)'>5 <img class = 'shurikenPrice' src = 'assets/shurikenscore.png' /></button>" +
+    "</li>"; 
+ 
+    html += "<li>" +
+    "<h3>Blue Headband</h3>" +
+    "<p><img src = 'assets/buyblueheadband.png' /> It is said that the colour blue brings depth and stability. Maybe this headband will stop you falling off the rope so much?</p>" +
+    "<button id = 'blueHeadband' type='button' " +
+    "onclick='purchaseHeadband(\"blueHeadband\", 5)'>5 <img class = 'shurikenPrice' src = 'assets/shurikenscore.png' /></button>" +
+    "</li>";
+ 
+    html += "<li>" +
+    "<h3>Level Pack</h3>" +
+    "<p><img src = 'assets/buylevels.png' /> A ninja gets bored playing on the same old levels all the time. Purchase this to unlock 4 new levels to play on!</p>" +
+    "<button id = 'levels' type='button' " +
+    "onclick='purchaseLevels(5)'>5 <img class = 'shurikenPrice' src = 'assets/shurikenscore.png' /></button>" +
+    "</li>"; 
+ 
+    html += "<li>" +
+    "<h3>Gold Ninja</h3>" +
+    "<p><img src = 'assets/buygoldninja.png' /> The Gold Ninja is legend. It is prophecy that those who control the Gold Ninja will rise to the top of the leaderboards.</p>" +
+    "<button id = 'goldninja' type='button' " +
+    "onclick='purchaseNinja(5)'>5 <img class = 'shurikenPrice' src = 'assets/shurikenscore.png' /></button>" +
+    "</li>";                 
+ 
+    html += "</ul>";
+    
+ 
+    overlay(html);
+
+}
+

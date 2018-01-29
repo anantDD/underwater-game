@@ -7,20 +7,107 @@
 	<title>first game</title>
 	<!-- <script type="text/javascript" src="js/Phaser.min.js"></script> -->
 	   <!-- <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script> -->
+	   <script>
+		
+	   function overlay(html) {
+    	 	el = document.getElementById("overlay");
+    	 	el.innerHTML = html;
+    		el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+    		window.scrollTo(0, 0);
+		}
+	</script>	
 	<script type="text/javascript" src="js/phaser.js"></script>
+
 	<!-- <script type="text/javascript" src="js/Phaser.js"></script>    -->
 
 	<style>
-		body{
-			padding:0;
-			margin:0;
-			background:black;
-		}
+		
+	#gameDiv{
+		position:relative;
+		width:400px;
+		margin:auto;
+	}
+		#overlay {
+			background-color:white;
+        visibility: hidden;
+        position: absolute;
+        top: 20px;
+        bottom: 20px;
+        width:88%;
+        margin-left: 6%;
+        text-align:center;
+        
+        z-index: 1000;
+        overflow-y: scroll;
+        box-shadow: -1px 2px 15px -1px #000;
+    }
+ 
+    #overlay div {
+        margin: auto;
+        background-color: #fff;
+        padding:15px;
+    }
+ 
+    #shopContent h3 {
+        display: inline;
+    }
+ 
+    #shopContent ul {
+        list-style-type: none;
+        padding-left: 0px;
+    }
+ 
+    #shopContent li {
+        margin-bottom: 20px;
+    }
+ 
+    #shopContent p {
+        text-align: left;
+    }
+ 
+    #shopContent p img {
+        float: left;
+        width: 60px;
+        height: auto;
+        padding-right: 15px;
+        padding-bottom: 15px;
+    }
+ 
+    #shopContent ul button {
+        background-color: #2ecc71;
+        color: #fff;
+        border: 1px solid #fff;
+        font-size: 1em;
+        font-weight: bold;
+        padding: 15px 15px;
+    }
+ 
+    .shurikenPrice {
+        height: 20px;
+        position: relative;
+        top: 5px;
+    }
+ 
+    .close {
+        width: 50px;
+        height: 50px;
+        position: fixed;
+        background-image: url(assets/close.png);
+        right: 20px;
+        top: 20px;
+        border: none;
+    }
 	</style>
 </head>
 <body>
-
-
+	<div id="gameDiv">
+		<div id="overlay">
+			<div id="shopContent"></div>
+		</div>
+	</div>
+	
+		
 	<script type="text/javascript" src="js/main.js"></script>
+	
 </body>
 </html>
