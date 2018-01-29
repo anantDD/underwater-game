@@ -24,46 +24,6 @@ body{
   background-color: white;
   padding:15px;
 }
-#shopContent h3{
-  display: inline;
-}
-
-#shopContent ul{
-  list-style-type: none;
-  padding-left: 0px;
-}
-
-#shopContent li{
-  margin-bottom: 20px;
-}
-
-#shopContent p{
-  text-align: left;
-}
-
-#shopContent p img{
-  float: left;
-  width: 60px;
-  height: auto;
-  padding-right: 15px;
-  padding-bottom: 15px;
-}
-
-#shopContent ul button{
-  background-color: #2ecc71;
-  color: #fff;
-  border: 1px solid #fff;
-  font-size: 1em;
-  font-weight: bold;
-  padding: 15px 15px;
-}
-
-.shurikenPrice{
-  height: 20px;
-  position: relative;
-  top: 5px;
-}
-
 .close{
   width: 50px;
   height: 50px;
@@ -89,13 +49,12 @@ body{
   left: 50px;
 }
 #resultSubtraction{
-
   padding-top: 20px !important;
   border-top: solid 1px black;
 }
 .box{
   border: solid 1px black;
-  display: inline;
+  display: inline;          
 }
 
 #numberButtons{
