@@ -97,3 +97,22 @@ body{
   border: none;
   padding:0;
 }
+.sub{
+ vertical-align: sub;
+ }
+ .box.active{
+  border: solid 1px orange;
+ }
+
+ /*BLINKING BORDER*/
+@keyframes blink { 
+   50% { border-color: #ff0000; } 
+}
+#resultSubtraction .active{ 
+    animation-name: blink ;
+    animation-duration: .5s ;
+    animation-timing-function: step-end ;
+    animation-iteration-count: infinite ;
+    animation-direction: alternate ;
+    /*animation: blink .5s step-end infinite alternate;*/
+}

@@ -1,7 +1,14 @@
 var allDisplayBoxes = document.getElementsByClassName("box");
 var allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
-
+var placeValue = 3;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
+
+/* clicks borrow
+  get associated minuend box
+  striethrought inner value
+  write new value
+  prepend '1' to our active value
+*/
 
 function openMathsProblemScreen(){
   var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
@@ -10,6 +17,7 @@ function openMathsProblemScreen(){
   fillBoxesWithValues(depth, 'subtrahend');
   let result = finalDepth - depth;
   fillBoxesWithValues(result, 'result');
+  makeTheRelevantBoxesActive();
 }
 
 function fillBoxesWithValues(num, type){
@@ -26,7 +34,7 @@ function splitNumber(n){
   }else if(n<100){
     digits = "00" + digits;
   }else if(n<1000){
-    digits = "000" + digits; 
+    digits = "0" + digits; 
   }
   // digits = digits.split("");
   return digits;
@@ -36,11 +44,60 @@ function getIndexOfRelevantBoxes(type){
   switch (type){
     case 'minuend':
       return 0;
-    
     case 'subtrahend':
       return 4;
     case 'result':
       return 8; 
   }
     
+}
+
+function makeTheRelevantBoxesActive(){
+  //place*0 , place*1, place *2...+ 
+  for(let i=0; i<3; i++){
+    let box = allDisplayBoxes[placeValue + i*4];
+    box.className += ' ' + 'active';
+  }
+}
+function makeTheRelevantBoxesInactive(){
+  for(let i=0; i<3; i++){
+    let box = allDisplayBoxes[placeValue + i*4];
+    box.classList.remove('active');
+  }
+}
+
+function changePlaceValueBackward(){   //direction ='forward' or 'backward'
+  makeTheRelevantBoxesInactive();
+  switch (placeValue){
+    case 0:
+      placeValue++;
+      break;
+    case 1:
+      placeValue++;
+      break;
+    case 2:
+      placeValue++;
+      break;
+    case 3:
+      placeValue = 0;
+  }
+  makeTheRelevantBoxesActive();
+}
+
+function changePlaceValueForward(){   //direction ='forward' or 'backward'
+  makeTheRelevantBoxesInactive();
+  switch (placeValue){
+    case 0:
+      placeValue=3;
+      break;
+    case 1:
+      placeValue--;
+      break;
+    case 2:
+      placeValue--;
+      break;
+    case 3:
+      placeValue--;
+  }
+  makeTheRelevantBoxesActive();
 }
