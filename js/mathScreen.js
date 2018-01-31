@@ -1,5 +1,6 @@
 var allDisplayBoxes = document.getElementsByClassName("box");
 var allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
+var allBorrowButtons = document.getElementsByClassName("borrow");
 var placeValue = 3;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 
@@ -9,6 +10,30 @@ var activeBoxColor = 'orange';
   write new value
   prepend '1' to our active value
 */
+ $('.borrow').on('click', function(){
+  let index = getIndexOfThisButton(this);
+  strikeThrough(index);
+  $('#minuend .box.active .valueOfBox').prepend('1');
+ });
+function getIndexOfThisButton(button){
+  console.log(button);
+  for(let i=0; i<3; i++){
+    if(button == allBorrowButtons[i]){
+      console.log(i);
+       return i;
+    }
+  }  
+  return null;
+ // let value=allValuesInsideDisplayBox.innerText;
+ // console.log(parseInt(value));
+}
+function strikeThrough(index){
+  console.log(allValuesInsideDisplayBox[index].innerText);
+  let oldValue = parseInt(allValuesInsideDisplayBox[index].innerText);
+  allValuesInsideDisplayBox[index].className += ' borrowedFrom';
+  // allValuesInsideDisplayBox[index].appendChild = ''+ oldValue -1;
+  $('#minuend .box:nth-of-type('+(index+1)+')').append(oldValue-1);
+}
 
 function openMathsProblemScreen(){
   var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
@@ -101,3 +126,5 @@ function changePlaceValueForward(){   //direction ='forward' or 'backward'
   }
   makeTheRelevantBoxesActive();
 }
+
+

@@ -201,7 +201,6 @@ function update() {
       player.body.velocity.x = 150;
       player.animations.play('right');
     }
-  
   }
 }
 

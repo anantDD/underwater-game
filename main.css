@@ -81,6 +81,9 @@ body{
   left: 50%;
   transform: translate(-50%,-50%);
 }
+.borrowedFrom{
+  text-decoration: line-through;
+}
 .shiftLeft, .shiftRight{
   position: absolute;
   top: 50%;
@@ -108,7 +111,7 @@ body{
 @keyframes blink { 
    50% { border-color: #ff0000; } 
 }
-#resultSubtraction .active{ 
+#resultSubtraction .box.active{ 
     animation-name: blink ;
     animation-duration: .5s ;
     animation-timing-function: step-end ;
