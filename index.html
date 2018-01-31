@@ -19,66 +19,76 @@
     		game.paused= false;
 	}
   </script>	
-  <script type="text/javascript" src="js/phaser.js">
-  </script>
+  <!-- <script type="text/javascript" src="js/phaser.min.js"> -->
+  <!-- </script> -->
+  <!-- <script type="text/javascript" src="js/jquery-3.3.1.min.js"> -->
+  <!-- </script> -->
+  <script type="text/javascript" src="../phaser.js">  </script>
+  <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
 </head>
 
 <body>
   <div id="gameDiv">
     <div id="overlay">
       <button class="close" onclick="overlay()">close</button>
-	  <h3>Calculate the height</h3>
-	  <div id="calculationDisplay">
-      <div id="minuend">
-      	<button type="">B</button>
-	    	<div class="box">
-	    		9
+	  	<h3>Calculate the height</h3>
+	  	<div id="calculationDisplay">
+      	<div id="minuend">
+	    		<div class="box">
+	    			<button class="borrow">B</button>
+	    			<span class="valueOfBox">9</span>
+		    	</div>
+	    		<div class="box">
+	    			<button class="borrow">B</button>
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+	    		<div class="box">
+	    			<button class="borrow">B</button>
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+	    		<div class="box">
+	    			<button class="borrow">B</button>
+		    		<span class="valueOfBox">9</span>
+	    		</div>
 	    	</div>
-	    	<button type="">B</button>
-    		<div class="box">
-	    		9
-	    	</div>
-	    	<button type="">B</button>
-    		<div class="box">
-	    		5 4
-	    	</div>
-	    	<button type="">B</button>
-    		<div class="box">
-	    		9
-    		</div>
-    	</div>
-      <div id="subtrahend">
-      	<span class="minusSign">
-	      	-
-      	</span>
-      	<div class="box">
-	    		9
-	    	</div>
-	    	<div class="box">
-	    		0
-	    	</div>
-	    	<div class="box">
-	    		0
-	    	</div>
-	    	<div class="box">
-	    		0
-	    	</div>
-      </div>
-      <div id="resultSubtraction">
-      	<div class="box">
-	    		4
-	    	</div>
-	    	<div class="box">
-	    		3
-	    	</div>
-	    	<div class="box">
-	    		2
-	    	</div>
-	    	<div class="box">
-	    		1
-	    	</div>
-      </div>
-  	</div> 
+	      <div id="subtrahend">
+	      	<span class="minusSign">
+		      	-
+	      	</span>
+	      	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+	      </div>
+	      <div id="resultSubtraction">
+	      	<div class="shiftLeft">
+	      		<button><<</button>
+	      	</div>
+	      	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="box">
+		    		<span class="valueOfBox">9</span>
+		    	</div>
+		    	<div class="shiftRight">
+		    		<button>>></button>
+		    	</div>
+	      </div>
+	  	</div> 
 	  	<div id="numberButtons">
 	  	  <div class="row">
 	  	    <button type="">1</button>
@@ -98,7 +108,7 @@
 	  	  <div class="row">
 	  	    <button type="">0</button>
 	  	  </div>
-	  	</div> 
+  		</div> 
 	  </div>
 	</div>
 	

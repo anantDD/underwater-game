@@ -8,6 +8,7 @@ var backgroundVelocity = 1.5;
 
 var firstLevelDepth = 9947;
 var secondLevelDepth = 9500;
+var finalDepth = 9999;
 
 var starVelocity = 50;
 var monsterVelocity = 20;
@@ -273,7 +274,7 @@ function levelReached(){
   console.log("answer this question");
   levelLine.kill();
   // el = document.getElementById("overlay");
-  openMathsProblemScreen(depth);
+  openMathsProblemScreen();
   game.paused = true;
 }
 
