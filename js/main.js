@@ -6,7 +6,7 @@ el.style.width = gameWidth + "px" ;
 
 var backgroundVelocity = 1.5;
 
-var firstLevelDepth = 9900;
+var firstLevelDepth = 9947;
 var secondLevelDepth = 9500;
 
 var starVelocity = 50;
@@ -33,7 +33,10 @@ var scoreColor = '#aaa';
 var scoreFontSize = '32px';
 var scoreIncreasePerStar = 10;
 var line;
-var counter=0;      
+var counter=0;
+
+//LINE
+var levelLineSpeed = 400;      
 
 
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update });
@@ -130,44 +133,6 @@ function create() {
   linesGroup.add(graphics2); // added directly to the group as a child
 */
 }
-function createLine(){
-  var graphics = game.add.graphics(0,0);
-  graphics.lineStyle(2, 0xffd9ff,1);
-  // graphics.moveTo(0,50);
-  graphics.lineTo(gameWidth ,0);
-  levelLine = game.add.sprite(0,0, graphics.generateTexture());
-  // levelLine.anchor.set(0);
-  // levelLines.add(levelLine);
-  graphics.destroy();
-  game.physics.arcade.enable(levelLine);
-  levelLine.body.velocity.y = 100;
-
-}
-function createOxygenTank () {  
-  oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
-  oxygenTank.anchor.setTo(0.5, 0.5);
-  oxygenTank.x = Math.random() * 798 + 1;
-  oxygenTank.body.velocity.y = 50;
-  //making the oxygenTanks patrol horizontally
-  //var tween = game.add.tween(oxygenTank).to( { x: gameWidth+1000 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-  //oxygenTank.body.collideWorldBounds = true;
-}
-
-function createEnemy (x, y, typeOfEnemy) {
-  enemy = enemies.create(x, y, typeOfEnemy);
-  enemy.anchor.setTo(0.5,0.5);
-
-  enemy.x= x;
-  enemy.y= y;
-  enemy.body.velocity.y = 100;
-
-  //making the enemies patrol horizontally
-  //var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-  //enemy.body.collideWorldBounds = true;
-
-  
-}
-
 
 function update() {
   depth -= 1;
@@ -239,6 +204,47 @@ function update() {
   }
 }
 
+function createLine(){
+  var graphics = game.add.graphics(0,0);
+  graphics.lineStyle(2, 0xffd9ff,1);
+  // graphics.moveTo(0,50);
+  graphics.lineTo(gameWidth ,0);
+  levelLine = game.add.sprite(0,0, graphics.generateTexture());
+  // levelLine.anchor.set(0);
+  // levelLines.add(levelLine);
+  graphics.destroy();
+  game.physics.arcade.enable(levelLine);
+  levelLine.body.velocity.y = levelLineSpeed;
+
+}
+function createOxygenTank () {  
+  oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
+  oxygenTank.anchor.setTo(0.5, 0.5);
+  oxygenTank.x = Math.random() * 798 + 1;
+  oxygenTank.body.velocity.y = 50;
+  //making the oxygenTanks patrol horizontally
+  //var tween = game.add.tween(oxygenTank).to( { x: gameWidth+1000 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+  //oxygenTank.body.collideWorldBounds = true;
+}
+
+function createEnemy (x, y, typeOfEnemy) {
+  enemy = enemies.create(x, y, typeOfEnemy);
+  enemy.anchor.setTo(0.5,0.5);
+
+  enemy.x= x;
+  enemy.y= y;
+  enemy.body.velocity.y = 100;
+
+  //making the enemies patrol horizontally
+  //var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+  //enemy.body.collideWorldBounds = true;
+
+  
+}
+
+
+
+
 function collectStar (player, star) {
   star.kill();
   //  Add and update the score
@@ -257,11 +263,6 @@ function collectOxygen (player, oxygen){
   console.log("Oxygen increased by 10%");
 }
 
-function openMathsProblemScreen(){
-  var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
-  overlay(html);
-}
-
 function onSwipe() {
   return (Phaser.Point.distance(game.input.activePointer.position, game.input.activePointer.positionDown) > 150 &&
    game.input.activePointer.duration > 100 &&
@@ -275,3 +276,4 @@ function levelReached(){
   openMathsProblemScreen(depth);
   game.paused = true;
 }
+

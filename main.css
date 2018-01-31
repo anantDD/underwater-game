@@ -38,23 +38,25 @@ body{
 #calculationDisplay > div{
   margin: 3px auto;
 }
-#minuend{
-
+#minuend button{
+  display: block;
 }
 #subtrahend{
   margin-bottom:10px !important;
 }
 #subtrahend .minusSign{
   position: absolute;
-  left: 50px;
+  left: 10px;
+  font-size:3em;
 }
 #resultSubtraction{
   padding-top: 20px !important;
   border-top: solid 1px black;
 }
-.box{
+.box, .row.borrow button{
   border: solid 1px black;
-  display: inline;          
+  display: inline-block;   
+  width: 10%;       
 }
 
 #numberButtons{
