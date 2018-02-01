@@ -85,7 +85,7 @@ body{
 .strikethrough{
   position: absolute;
   top:40%;
-  left:20%;
+  left:12%;
   text-decoration: line-through;
   font-size: 1em;
   /*color: red;*/

@@ -5,14 +5,8 @@ var totalDigits = 4;
 var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 var minuendArr = [];
+var resultArr = new Array(totalDigits);
 var tempMinuendArr = [];
-/* clicks borrow
-  get associated minuend box
-  striethrought inner value
-  write new value
-  prepend '1' to our active value
-*/
-
 
 
 function openMathsProblemScreen(){
@@ -20,31 +14,49 @@ function openMathsProblemScreen(){
   overlay(html);
   initializeDisplay();
   
-  $('.borrow').on('click', borrowValue);
+  $('.borrow').on('click', function(){
+    if($(this).attr('value') == '0'){
+      youCantBorrowFromZero();
+    }else{
+      borrowValue(this);
+    }
+  });
+
+  $('#numberButtons button').on('click', function(){
+    let buttonValue = parseInt($(this).attr('value'));
+    console.log(buttonValue);
+    $('#resultSubtraction .box.active .valueOfBox').html(buttonValue);
+    resultArr[placeValue] = buttonValue;
+  });
 }
 
-function borrowValue(){
-  console.log(this);
-  let id = $(this).attr('id');
+function borrowValue(button){
+  let id = $(button).attr('id');
+
   for(let i=0;i<totalDigits-1;i++){ //going through all the buttons to select the correct one.
     if (id=='borrow'+i){  //when the correct button is  found.
       //change value in the box of the digit that GIVES THE BORROW
       $('.box:nth(' + i +') .valueOfBox').addClass('strikethrough');                            
-      $('.box:nth(' + i +')').append('<span class="valueOfBox">'+(minuendArr[i]-1)+'</span>');  
-      tempMinuendArr[i]--;        
-      //change value of the box THAT RECEIVES THE BORROW
-      $('#minuend .box.active .valueOfBox').prepend('1'); 
-      tempMinuendArr[placeValue]+=10;
+      $('.box:nth(' + i +')').append('<span class="valueOfBox">'+(tempMinuendArr[i]-1)+'</span>');  
+      tempMinuendArr[i]--;  
       //disable the borrow button once clicked
-      $(this).attr('disabled','true');
-      // WHEN THERE ARE 0's IN BETWEEN
-      if((placeValue-i)>1){   
-        for(let j=i+1; j<placeValue;j++){
-          $('.box:nth(' + j +') .valueOfBox').addClass('strikethrough');    
-          $('.box:nth(' + j +')').append('<span class="valueOfBox">'+9+'</span>');
-          tempMinuendArr[j] = 9;
-        }
+      $(button).attr('disabled','true');  
+
+      //change value of the box THAT RECEIVES THE BORROW
+      $('.box:nth(' + (i+1) +') .valueOfBox').prepend('1'); 
+      tempMinuendArr[i+1]+=10;
+      if(i!=totalDigits-2){   //last button has no need to do this
+        $('#borrow'+(i+1)).attr('value', '1');
       }
+      
+      // WHEN THERE ARE 0's IN BETWEEN
+      // if((placeValue-i)>1){   
+      //   for(let j=i+1; j<placeValue;j++){
+      //     $('.box:nth(' + j +') .valueOfBox').addClass('strikethrough');    
+      //     $('.box:nth(' + j +')').append('<span class="valueOfBox">'+9+'</span>');
+      //     tempMinuendArr[j] = 9;
+      //   }
+      // }
 
     }
   }
@@ -200,9 +212,8 @@ function initializeDisplay(){
   makeResult(totalDigits);
 
    for(let i=0;i<totalDigits-1;i++){  //disabling borrow buttons where the digit is a zero
-    console.log('hi');
     if(minuendArr[i] == '0'){
-      $('#borrow'+i).attr('disabled', 'true');
+      $('#borrow'+i).attr('value', '0');
     }
   }
 
@@ -213,7 +224,15 @@ function initializeDisplay(){
   
   fillBoxesWithValues(finalDepth, 'minuend');
   fillBoxesWithValues(depth, 'subtrahend');
-  fillBoxesWithValues(result, 'result');
+  // fillBoxesWithValues(result, 'result');
 
   makeTheRelevantBoxesActive();
+}
+
+function youCantBorrowFromZero(){
+  console.log('You can\'t borrow from zero');
+}
+
+function changeValueOfButton(button){
+  $(button).attr('value','1');
 }
