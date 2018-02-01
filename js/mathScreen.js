@@ -1,20 +1,58 @@
-var allDisplayBoxes = document.getElementsByClassName("box");
-var allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
-var allBorrowButtons = document.getElementsByClassName("borrow");
-var placeValue = 3;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
+var allDisplayBoxes;
+var allValuesInsideDisplayBox ;
+var allBorrowButtons;
+var totalDigits = 4;
+var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
-
+var minuendArr = [];
+var tempMinuendArr = [];
 /* clicks borrow
   get associated minuend box
   striethrought inner value
   write new value
   prepend '1' to our active value
 */
- $('.borrow').on('click', function(){
-  let index = getIndexOfThisButton(this);
-  strikeThrough(index);
-  $('#minuend .box.active .valueOfBox').prepend('1');
- });
+
+
+
+function openMathsProblemScreen(){
+  var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
+  overlay(html);
+  initializeDisplay();
+  
+  $('.borrow').on('click', borrowValue);
+}
+
+function borrowValue(){
+  console.log(this);
+  let id = $(this).attr('id');
+  for(let i=0;i<totalDigits-1;i++){ //going through all the buttons to select the correct one.
+    if (id=='borrow'+i){  //when the correct button is  found.
+      //change value in the box of the digit that GIVES THE BORROW
+      $('.box:nth(' + i +') .valueOfBox').addClass('strikethrough');                            
+      $('.box:nth(' + i +')').append('<span class="valueOfBox">'+(minuendArr[i]-1)+'</span>');  
+      tempMinuendArr[i]--;        
+      //change value of the box THAT RECEIVES THE BORROW
+      $('#minuend .box.active .valueOfBox').prepend('1'); 
+      tempMinuendArr[placeValue]+=10;
+      //disable the borrow button once clicked
+      $(this).attr('disabled','true');
+      // WHEN THERE ARE 0's IN BETWEEN
+      if((placeValue-i)>1){   
+        for(let j=i+1; j<placeValue;j++){
+          $('.box:nth(' + j +') .valueOfBox').addClass('strikethrough');    
+          $('.box:nth(' + j +')').append('<span class="valueOfBox">'+9+'</span>');
+          tempMinuendArr[j] = 9;
+        }
+      }
+
+    }
+  }
+  // let index = getIndexOfThisButton(this);
+  // strikeThrough(index);
+  // $('#minuend .box.active .valueOfBox').prepend('1');
+}
+
 function getIndexOfThisButton(button){
   console.log(button);
   for(let i=0; i<3; i++){
@@ -30,20 +68,12 @@ function getIndexOfThisButton(button){
 function strikeThrough(index){
   console.log(allValuesInsideDisplayBox[index].innerText);
   let oldValue = parseInt(allValuesInsideDisplayBox[index].innerText);
-  allValuesInsideDisplayBox[index].className += ' borrowedFrom';
+  allValuesInsideDisplayBox[index].className += ' strikethrough';
   // allValuesInsideDisplayBox[index].appendChild = ''+ oldValue -1;
   $('#minuend .box:nth-of-type('+(index+1)+')').append(oldValue-1);
 }
 
-function openMathsProblemScreen(){
-  var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
-  overlay(html);
-  fillBoxesWithValues(finalDepth, 'minuend');
-  fillBoxesWithValues(depth, 'subtrahend');
-  let result = finalDepth - depth;
-  fillBoxesWithValues(result, 'result');
-  makeTheRelevantBoxesActive();
-}
+
 
 function fillBoxesWithValues(num, type){
   let n = splitNumber(num);
@@ -52,6 +82,7 @@ function fillBoxesWithValues(num, type){
     allValuesInsideDisplayBox[index+i].innerText = n[i];
   }
 }
+
 function splitNumber(n){
   let digits= ("" + n);
   if(n<10){
@@ -62,7 +93,8 @@ function splitNumber(n){
     digits = "0" + digits; 
   }
   // digits = digits.split("");
-  return digits;
+  let num= [parseInt(digits[0]),parseInt(digits[1]),parseInt(digits[2]),parseInt(digits[3])]
+  return num;
 }
 
 function getIndexOfRelevantBoxes(type){
@@ -127,4 +159,61 @@ function changePlaceValueForward(){   //direction ='forward' or 'backward'
   makeTheRelevantBoxesActive();
 }
 
+function makeMinuend(n){
+  var html='';
+  for (let i=0; i<n; i++){
+    html+='<div class="box"><button class="borrow" id="borrow'+i +'">B</button><span class="valueOfBox">9</span></div>';
+  }
+  $('#minuend').html(html);
+  $('#borrow3').remove();   //removing the borrow button from Units place
+}
 
+function makeSubtrahend(n){
+  var html='';
+  html+= '<span class="minusSign">-</span>';
+  for (let i=0; i<n; i++){
+    html+='<div class="box"><span class="valueOfBox">9</span></div>';
+  }
+  $('#subtrahend').html(html);
+}
+
+function makeResult(n){
+  var html='';
+  html+='<div class="shiftLeft"><button onclick="changePlaceValueForward()"><<</button></div>';
+  for (let i=0; i<n; i++){
+    html+='<div class="box"><span class="valueOfBox">9</span></div>';
+  }
+  html+='<div class="shiftRight"><button onclick="changePlaceValueBackward()">>></button></div>';
+  $('#resultSubtraction').html(html);
+}
+
+function initializeDisplay(){
+  placeValue = totalDigits -1;
+  let result = finalDepth - depth;
+  minuendArr = splitNumber(finalDepth);
+  tempMinuendArr = splitNumber(finalDepth);
+
+ 
+
+  makeMinuend(totalDigits);
+  makeSubtrahend(totalDigits);
+  makeResult(totalDigits);
+
+   for(let i=0;i<totalDigits-1;i++){  //disabling borrow buttons where the digit is a zero
+    console.log('hi');
+    if(minuendArr[i] == '0'){
+      $('#borrow'+i).attr('disabled', 'true');
+    }
+  }
+
+  allDisplayBoxes = document.getElementsByClassName("box");
+  allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
+  allBorrowButtons = document.getElementsByClassName("borrow");
+
+  
+  fillBoxesWithValues(finalDepth, 'minuend');
+  fillBoxesWithValues(depth, 'subtrahend');
+  fillBoxesWithValues(result, 'result');
+
+  makeTheRelevantBoxesActive();
+}

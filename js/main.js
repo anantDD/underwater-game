@@ -6,9 +6,9 @@ el.style.width = gameWidth + "px" ;
 
 var backgroundVelocity = 1.5;
 
-var firstLevelDepth = 9947;
-var secondLevelDepth = 9500;
-var finalDepth = 9999;
+var firstLevelDepth = 8800;
+var secondLevelDepth = 876;
+var finalDepth = 9002;
 
 var starVelocity = 50;
 var monsterVelocity = 20;
@@ -62,7 +62,7 @@ var stars;
 var alien;
 var score = 0;
 var scoreText;
-var depth = 9999;
+var depth = finalDepth;
 var depthText;
 var lineS;
 
@@ -276,4 +276,5 @@ function levelReached(){
   openMathsProblemScreen();
   game.paused = true;
 }
+
 

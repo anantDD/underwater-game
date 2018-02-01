@@ -58,6 +58,7 @@ body{
   border-top: solid 1px black;
 }
 .box{
+  /*position: relative;*/
   border: solid 1px black;
   display: inline-block;   
   width: 10%;       
@@ -81,8 +82,15 @@ body{
   left: 50%;
   transform: translate(-50%,-50%);
 }
-.borrowedFrom{
+.strikethrough{
+  position: absolute;
+  top:40%;
+  left:20%;
   text-decoration: line-through;
+  font-size: 1em;
+  /*color: red;*/
+  /*vertical-align: text-top;*/
+  /*transition: all 4s ease-in-out;*/
 }
 .shiftLeft, .shiftRight{
   position: absolute;
