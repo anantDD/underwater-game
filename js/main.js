@@ -6,9 +6,9 @@ el.style.width = gameWidth + "px" ;
 
 var backgroundVelocity = 1.5;
 
-var firstLevelDepth = 90;
-var secondLevelDepth = 9;
-var finalDepth = 99;
+var firstLevelDepth = 900;
+var secondLevelDepth = 200;
+var finalDepth = 999;
 
 var starVelocity = 50;
 var monsterVelocity = 20;

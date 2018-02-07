@@ -1,7 +1,7 @@
 var allDisplayBoxes;
 var allValuesInsideDisplayBox ;
 var allBorrowButtons;
-var totalDigits = 2;
+var totalDigits = 3;
 var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 var minuendArr = [];
@@ -47,7 +47,9 @@ function borrowValue(button){
       //change value of the box THAT RECEIVES THE BORROW
       $('.box:nth(' + (i+1) +') .valueOfBox').prepend('1'); 
       tempMinuendArr[i+1]+=10;
-      if(i!=totalDigits-2){   //last button has no need to do this
+
+      //if the borrow is added to a value that was initially zero(and thus had its button disabled, we need to change it)
+      if(i!=totalDigits-2){   //last button does not have a button ahead of it so this step is to be skipped
         $('#borrow'+(i+1)).attr('value', '1');
       }
       
@@ -144,36 +146,20 @@ function makeTheRelevantBoxesInactive(){
 
 function changePlaceValueBackward(){   //direction ='forward' or 'backward'
   makeTheRelevantBoxesInactive();
-  switch (placeValue){
-    case 0:
-      placeValue++;
-      break;
-    case 1:
-      placeValue++;
-      break;
-    case 2:
-      placeValue++;
-      break;
-    case 3:
-      placeValue = 0;
+  if(placeValue == totalDigits-1){
+    placeValue =0;
+  }else{
+    placeValue++;
   }
   makeTheRelevantBoxesActive();
 }
 
 function changePlaceValueForward(){   //direction ='forward' or 'backward'
   makeTheRelevantBoxesInactive();
-  switch (placeValue){
-    case 0:
-      placeValue=3;
-      break;
-    case 1:
-      placeValue--;
-      break;
-    case 2:
-      placeValue--;
-      break;
-    case 3:
-      placeValue--;
+  if(placeValue == 0){
+    placeValue = totalDigits -1;
+  }else{
+    placeValue--;
   }
   makeTheRelevantBoxesActive();
 }
