@@ -1,7 +1,7 @@
 var allDisplayBoxes;
 var allValuesInsideDisplayBox ;
 var allBorrowButtons;
-var totalDigits = 4;
+var totalDigits = 3;
 var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 var minuendArr = [];
@@ -97,15 +97,18 @@ function fillBoxesWithValues(num, type){
 
 function splitNumber(n){
   let digits= ("" + n);
-  if(n<10){
-    digits = "000" + digits;
-  }else if(n<100){
-    digits = "00" + digits;
-  }else if(n<1000){
-    digits = "0" + digits; 
+  digits = digits.split("");
+  let num= [];
+  let zeroesToBeAdded = totalDigits - digits.length; 
+  
+  for(let i=0; i<totalDigits; i++){
+    if(i<zeroesToBeAdded){      // prepending 0's when required. eg.  99 becomes 0099  in 4 digit calculations
+      num[i] = 0;
+    }else{
+      num[i] = parseInt(digits[i - zeroesToBeAdded]); // copying values from the digits string.
+    }  
   }
-  // digits = digits.split("");
-  let num= [parseInt(digits[0]),parseInt(digits[1]),parseInt(digits[2]),parseInt(digits[3])]
+  
   return num;
 }
 
@@ -114,23 +117,25 @@ function getIndexOfRelevantBoxes(type){
     case 'minuend':
       return 0;
     case 'subtrahend':
-      return 4;
+      return (0 + totalDigits);
     case 'result':
-      return 8; 
+      return (0 + totalDigits*2); 
   }
     
 }
 
 function makeTheRelevantBoxesActive(){
   //place*0 , place*1, place *2...+ 
-  for(let i=0; i<3; i++){
-    let box = allDisplayBoxes[placeValue + i*4];
+  for(let i=0; i<3 ; i++){
+    //choose all boxes of a particular place. eg. 4th 8th and 12th box.
+    let box = allDisplayBoxes[placeValue + i*(totalDigits)];
     box.className += ' ' + 'active';
   }
 }
+
 function makeTheRelevantBoxesInactive(){
   for(let i=0; i<3; i++){
-    let box = allDisplayBoxes[placeValue + i*4];
+    let box = allDisplayBoxes[placeValue + i*(totalDigits)];
     box.classList.remove('active');
   }
 }
@@ -213,17 +218,11 @@ function initializeDisplay(){
   minuendArr = splitNumber(finalDepth);
   tempMinuendArr = splitNumber(finalDepth);
 
- 
-
   makeMinuend(totalDigits);
   makeSubtrahend(totalDigits);
   makeResult(totalDigits);
 
-   for(let i=0;i<totalDigits-1;i++){  //disabling borrow buttons where the digit is a zero
-    if(minuendArr[i] == '0'){
-      $('#borrow'+i).attr('value', '0');
-    }
-  }
+  disableBorrowButtonForUnitPlace();
 
   allDisplayBoxes = document.getElementsByClassName("box");
   allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
@@ -243,4 +242,12 @@ function youCantBorrowFromZero(){
 
 function changeValueOfButton(button){
   $(button).attr('value','1');
+}
+
+function disableBorrowButtonForUnitPlace(){
+  for(let i=0;i<totalDigits-1;i++){  //disabling borrow buttons where the digit is a zero
+    if(minuendArr[i] == '0'){
+      $('#borrow'+i).attr('value', '0');
+    }
+  }
 }
