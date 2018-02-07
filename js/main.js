@@ -6,9 +6,9 @@ el.style.width = gameWidth + "px" ;
 
 var backgroundVelocity = 1.5;
 
-var firstLevelDepth = 700;
-var secondLevelDepth = 150;
-var finalDepth = 900;
+var firstLevelDepth = 90;
+var secondLevelDepth = 9;
+var finalDepth = 99;
 
 var starVelocity = 50;
 var monsterVelocity = 20;
@@ -37,7 +37,7 @@ var line;
 var counter=0;
 
 //LINE
-var levelLineSpeed = 400;      
+var levelLineSpeed = 900;      
 
 
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update });

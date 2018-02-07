@@ -1,33 +1,35 @@
 var allDisplayBoxes;
 var allValuesInsideDisplayBox ;
 var allBorrowButtons;
-var totalDigits = 3;
+var totalDigits = 2;
 var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 var minuendArr = [];
 var resultArr = new Array(totalDigits);
 var tempMinuendArr = [];
+var borrowRequired = true;
 
+//click event for all NUMBER Buttons
+$('#numberButtons button').on('click', function(){
+  let buttonValue = parseInt($(this).attr('value'));
+  console.log(buttonValue);
+  $('#resultSubtraction .box.active .valueOfBox').html(buttonValue);
+  resultArr[placeValue] = buttonValue;
+});
+
+// click event for all BORROW buttons
+$('body').on('click','.borrow', function(){ //had to be written like this since the borrow button is not present initially.
+  if($(this).attr('value') == '0'){
+    youCantBorrowFromZero();
+  }else{
+    borrowValue(this);
+  }
+});
 
 function openMathsProblemScreen(){
   var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
   overlay(html);
   initializeDisplay();
-  
-  $('.borrow').on('click', function(){
-    if($(this).attr('value') == '0'){
-      youCantBorrowFromZero();
-    }else{
-      borrowValue(this);
-    }
-  });
-
-  $('#numberButtons button').on('click', function(){
-    let buttonValue = parseInt($(this).attr('value'));
-    console.log(buttonValue);
-    $('#resultSubtraction .box.active .valueOfBox').html(buttonValue);
-    resultArr[placeValue] = buttonValue;
-  });
 }
 
 function borrowValue(button){
@@ -108,7 +110,7 @@ function splitNumber(n){
       num[i] = parseInt(digits[i - zeroesToBeAdded]); // copying values from the digits string.
     }  
   }
-  
+
   return num;
 }
 
@@ -176,21 +178,22 @@ function changePlaceValueForward(){   //direction ='forward' or 'backward'
   makeTheRelevantBoxesActive();
 }
 
-function makeMinuendWithBorrow(n){
-  var html='';
-  for (let i=0; i<n; i++){
-    html+='<div class="box"><button class="borrow" id="borrow'+i +'">B</button><span class="valueOfBox">9</span></div>';
-  }
-  $('#minuend').html(html);
-  $('#borrow3').remove();   //removing the borrow button from Units place
-}
-
 function makeMinuend(n){
   var html='';
-  for (let i=0; i<n; i++){
-    html+='<div class="box"><span class="valueOfBox">9</span></div>';
-  }
-  $('#minuend').html(html);
+  let i;
+  if(borrowRequired){
+      for (i=0; i<n; i++){
+    html+='<div class="box"><button class="borrow" id="borrow'+i +'">B</button><span class="valueOfBox">9</span></div>';
+    }
+    $('#minuend').html(html);
+    $('#borrow' + (i-1)).remove();   //removing the borrow button from Units place 
+  }else{
+    for (i=0; i<n; i++){
+      html+='<div class="box"><span class="valueOfBox">9</span></div>';
+    }
+    $('#minuend').html(html);
+  }  
+  
 }
 
 function makeSubtrahend(n){
@@ -222,8 +225,7 @@ function initializeDisplay(){
   makeSubtrahend(totalDigits);
   makeResult(totalDigits);
 
-  disableBorrowButtonForUnitPlace();
-
+  
   allDisplayBoxes = document.getElementsByClassName("box");
   allValuesInsideDisplayBox = document.getElementsByClassName("valueOfBox");
   allBorrowButtons = document.getElementsByClassName("borrow");
@@ -231,7 +233,6 @@ function initializeDisplay(){
   
   fillBoxesWithValues(finalDepth, 'minuend');
   fillBoxesWithValues(depth, 'subtrahend');
-  // fillBoxesWithValues(result, 'result');
 
   makeTheRelevantBoxesActive();
 }
@@ -244,7 +245,7 @@ function changeValueOfButton(button){
   $(button).attr('value','1');
 }
 
-function disableBorrowButtonForUnitPlace(){
+function disableBorrowButtonForZeroValues(){
   for(let i=0;i<totalDigits-1;i++){  //disabling borrow buttons where the digit is a zero
     if(minuendArr[i] == '0'){
       $('#borrow'+i).attr('value', '0');
