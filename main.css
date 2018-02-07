@@ -3,7 +3,6 @@ body{
 }
 #gameDiv{
   position: relative;
-  
   margin: auto;
 }
 #overlay{
@@ -15,8 +14,21 @@ body{
   width:88%;
   margin-left: 6%;
   text-align:center;
-  z-index: 1000;
-  overflow-y: scroll;
+  z-index: 99;
+  /*overflow-y: scroll;*/
+  box-shadow: -1px 2px 15px -1px #000;
+}
+#submitScreen{
+  background-color: #fff;
+  visibility: hidden;
+  position: absolute;
+  top: 80px;
+  bottom: 80px;
+  left:10px;
+  right:10px;
+  margin: auto;
+  text-align:center;
+  z-index: 999;
   box-shadow: -1px 2px 15px -1px #000;
 }
 #overlay div{

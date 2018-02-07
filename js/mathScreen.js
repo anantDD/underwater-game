@@ -7,14 +7,18 @@ var activeBoxColor = 'orange';
 var minuendArr = [];
 var resultArr = new Array(totalDigits);
 var tempMinuendArr = [];
-var borrowRequired = true;
+var borrowRequired = false;
 
 //click event for all NUMBER Buttons
 $('#numberButtons button').on('click', function(){
   let buttonValue = parseInt($(this).attr('value'));
-  console.log(buttonValue);
   $('#resultSubtraction .box.active .valueOfBox').html(buttonValue);
   resultArr[placeValue] = buttonValue;
+  if(placeValue == 0){
+    openSubmitScreen();
+  }
+  changePlaceValueForward();
+
 });
 
 // click event for all BORROW buttons
@@ -237,4 +241,18 @@ function disableBorrowButtonForZeroValues(){
       $('#borrow'+i).attr('value', '0');
     }
   }
+}
+
+function openSubmitScreen(){
+  $('#submitScreen').css('visibility', 'visible');
+  $('#submitScreen p .answer').html(resultArr.join(''));
+}
+
+function closeSubmitScreen(){
+  $('#submitScreen').css('visibility', 'hidden');
+}
+
+function exitMathsScreenAndResumeGame(){
+  $('#submitScreen').css('visibility', 'hidden');
+  overlay();
 }

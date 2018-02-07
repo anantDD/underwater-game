@@ -30,7 +30,6 @@
 <body>
   <div id="gameDiv">
     <div id="overlay">
-      <button class="close" onclick="overlay()">close</button>
 	  	<h3>Calculate the height</h3>
       <div id="calculationDisplay">
         <div id="minuend">
@@ -60,6 +59,15 @@
 	  	    <button value="0">0</button>
 	  	  </div>
   		</div> 
+      <div id="submitScreen">
+        <p>
+          Your answer is <span class="answer"></span>
+          <br>
+          Submit answer?
+          <button class="close" onclick="exitMathsScreenAndResumeGame()">Yes</button>
+          <button class="close" onclick="closeSubmitScreen()">No</button>
+        </p>
+      </div>
 	  </div>
 	</div>
 	
