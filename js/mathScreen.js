@@ -171,13 +171,21 @@ function changePlaceValueForward(){   //direction ='forward' or 'backward'
   makeTheRelevantBoxesActive();
 }
 
-function makeMinuend(n){
+function makeMinuendWithBorrow(n){
   var html='';
   for (let i=0; i<n; i++){
     html+='<div class="box"><button class="borrow" id="borrow'+i +'">B</button><span class="valueOfBox">9</span></div>';
   }
   $('#minuend').html(html);
   $('#borrow3').remove();   //removing the borrow button from Units place
+}
+
+function makeMinuend(n){
+  var html='';
+  for (let i=0; i<n; i++){
+    html+='<div class="box"><span class="valueOfBox">9</span></div>';
+  }
+  $('#minuend').html(html);
 }
 
 function makeSubtrahend(n){

@@ -8,7 +8,7 @@ var backgroundVelocity = 1.5;
 
 var firstLevelDepth = 8800;
 var secondLevelDepth = 876;
-var finalDepth = 9999;
+var finalDepth = 9000;
 
 var starVelocity = 50;
 var monsterVelocity = 20;
