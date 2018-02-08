@@ -30,15 +30,15 @@ var playerGravity = 20;
 
 //SCORE
 var scorePositionX = gameWidth - 100;
-var scorePositionY = gameHeight-16;
-var scoreColor = '#ffff00';
+var scorePositionY = 16;
+var scoreColor = '#ffffff';
 var scoreFontSize = '16px';
 var scoreIncreasePerStar = 10;
 
 //DEPTH Display
 var depthPositionX = 0;
-var depthPositionY = gameHeight-16;
-var depthColor = '#00ff00';
+var depthPositionY = 16;
+var depthColor = '#ffffff';
 var depthFontSize = '16px';
 
 var line;
@@ -55,11 +55,13 @@ var lengthOfBar = gameHeight-150;
 var currentDepthMarker;
 var oldDepthMarker =gameHeight -100 ;
 
+//oxygen
+var oxygenLeft=100;
 //spawning
 var xBeginSpawnPoint = topX2 +3;
 var xEndSpawnPoint = gameWidth -10;
 var yBeginSpawnPoint = 0;
-var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
   game.load.image('ocean', 'assets/591.jpg');
@@ -99,6 +101,10 @@ function create() {
   //  We will enable physics for any object that is created in this group
   platforms.enableBody = true;
 
+  var barConfig = {x: gameWidth/2, y: gameHeight-10, width:gameWidth-100, height:10};
+  this.myHealthBar = new HealthBar(this.game, barConfig);
+  
+  
   // The player and its settings
   player = game.add.sprite(playerInitialPositionX, playerInitialPositionY, 'dude');
   //  We need to enable physics on the player
@@ -109,6 +115,8 @@ function create() {
   //  Our two animations, walking left and right.
   player.animations.add('left', [0, 1, 2, 3,4,5,6,7], playerFrameRate, true);  //(name,frames,frameRate,loop)
   player.animations.add('right', [8,9,10,11,12,13,14,15], playerFrameRate, true);
+  player.body.setSize(90, 40 , 0, 25); // setting the collision area for the enemies. setSize(height, width, offsetX, offsetY)
+
 
   //  Stars to collect
   stars = game.add.group();
@@ -117,7 +125,6 @@ function create() {
   //  Enemies
   enemies= game.add.group();
   enemies.enableBody = true;
-
   // Lines
   lineS =game.add.group();
   lineS.enableBody = true;
@@ -128,36 +135,23 @@ function create() {
   oxygenTanks.enableBody = true;
   oxygenTanks.physicsBodyType = Phaser.Physics.ARCADE; 
 
-  //  The score
   scoreText = game.add.text(scorePositionX, scorePositionY, 'Score: 0', { fontSize: scoreFontSize, fill: scoreColor });
-  //  The depth
+
   depthText = game.add.text(depthPositionX, depthPositionY, 'Depth: 9999m', {fontSize: depthFontSize, fill: depthColor});
   //  Our controls.
   cursors = game.input.keyboard.createCursorKeys();
 
-  // createLine(10,50,10,(gameHeight-200), 0);
-  // createLine(20,gameHeight-100,30,gameHeight-100,0,1);
-  // createLine(topX1, currentDepthMarker, topX2 , currentDepthMarker, 0,1);
-  // createLine(0,gameHeight-100, 10, 50, 0,20);
-  let graphics = game.add.graphics(0,0);
-
-  graphics.lineStyle(1, 0x000066, 2);
-  graphics.moveTo(topX1,topY);
-  graphics.lineTo(topX1,lengthOfBar+topY);
-  // graphics.lineTo(topX2+1,lengthOfBar+topY);
-  // graphics.moveTo(topX2+1,topY);
-  // graphics.lineTo(topX1,topY);
-  for(let i=topY; i<=lengthOfBar+topY;i=i+5){
-    graphics.moveTo(topX1,i);
-    graphics.lineTo(topX2,i);
-    console.log(i);
-  }
-  // graphics.destroy();
+  createDepthBar();
 }
 
 function update() {
   depth -= 1;
   counter= counter+1;
+  oxygenLeft= clampOxygen(oxygenLeft-0.1);
+  if(oxygenLeft===0){
+    oxygenReachedZero();
+
+  }
   currentDepthMarker = Math.round((lengthOfBar/finalDepth)*depth + topY);
   if(currentDepthMarker == oldDepthMarker-5){
     // console.log(currentDepthMarker);
@@ -167,6 +161,10 @@ function update() {
   if(depth<=0){
     alert('Congratulations adventurer. You have reached the surface.');
     game.paused = true;
+  }
+  if(depth%10==0){
+
+    this.myHealthBar.setPercent(oxygenLeft);
   }
   
   //  scrolling the background
@@ -234,6 +232,23 @@ function update() {
   }
 }
 
+function render() {
+
+    // var p = game.input.getLocalPosition(image);
+    // var p = game.input.getLocalPosition(image2);
+    // var p = game.input.getLocalPosition(enemy, game.input.activePointer);
+
+
+    // game.debug.pointInfo(p, 32, 32);
+    // game.debug.point(p);
+    // game.debug.text();
+    // game.debug.spriteInfo(enemies, 32, 32);
+
+    // game.debug.circle(enemies.hitArea);
+
+}
+
+
 function createLine(initialX, initialY, finalX, finalY, speed, width, color){
   let graphics = game.add.graphics(0,0);
   let line;
@@ -269,6 +284,8 @@ function createEnemy (x, y, typeOfEnemy) {
   enemy.x= x;
   enemy.y= y;
   enemy.body.velocity.y = 100;
+  
+  enemy.body.setSize(32, 32 , 16, 16); // setting the collision area for the enemies. setSize(height, width, offsetX, offsetY)
   //making the enemies patrol horizontally
   //var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
   //enemy.body.collideWorldBounds = true;
@@ -292,6 +309,7 @@ function deathByEnemies (player, enemy){
 
 function collectOxygen (player, oxygen){
   oxygen.kill();
+  oxygenLeft=clampOxygen(oxygenLeft+20);
   console.log("Oxygen increased by 10%");
 }
 
@@ -309,4 +327,29 @@ function levelReached(){
   game.paused = true;
 }
 
+function createDepthBar(){
+  let graphics = game.add.graphics(0,0);
+  graphics.lineStyle(1, 0x000066, 2);
+  graphics.moveTo(topX1,topY);
+  graphics.lineTo(topX1,lengthOfBar+topY);
+
+  game.add.text(0, lengthOfBar+topY+10, '9999 m', { fontSize: '8px', fill: '#000000' });
+  game.add.text(0, topY-10, '0 m',{fontSize: '8px', fill: '#000000'});
+
+  for(let i=topY; i<=lengthOfBar+topY;i=i+5){
+    graphics.moveTo(topX1,i);
+    graphics.lineTo(topX2,i);
+  }
+}
+
+function clampOxygen(val) {
+    let max=100;
+    let min=0;
+    return  val > max ? max : val < min ? min : val;
+}
+
+function oxygenReachedZero(){
+  alert('Valar Morghulis');
+  game.paused = true;
+}
 
