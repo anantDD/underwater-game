@@ -8,7 +8,8 @@ var backgroundVelocity = 1.5;
 
 var firstLevelDepth = 900;
 var secondLevelDepth = 200;
-var finalDepth = 999;
+var finalDepth = 9999;
+
 
 var starVelocity = 50;
 var monsterVelocity = 20;
@@ -28,18 +29,36 @@ var playerVelocityDown= 500;
 var playerGravity = 20;
 
 //SCORE
-var scorePositionX = 16;
-var scorePositionY = 16;
-var scoreColor = '#aaa';
-var scoreFontSize = '32px';
+var scorePositionX = gameWidth - 100;
+var scorePositionY = gameHeight-16;
+var scoreColor = '#ffff00';
+var scoreFontSize = '16px';
 var scoreIncreasePerStar = 10;
+
+//DEPTH Display
+var depthPositionX = 0;
+var depthPositionY = gameHeight-16;
+var depthColor = '#00ff00';
+var depthFontSize = '16px';
+
 var line;
 var counter=0;
 
 //LINE
 var levelLineSpeed = 900;      
 
+//depthBar
+var topX1 = 5;
+var topX2 = 15;
+var topY = 50;
+var lengthOfBar = gameHeight-150;
+var currentDepthMarker;
+var oldDepthMarker =gameHeight -100 ;
 
+//spawning
+var xBeginSpawnPoint = topX2 +3;
+var xEndSpawnPoint = gameWidth -10;
+var yBeginSpawnPoint = 0;
 var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -110,34 +129,46 @@ function create() {
   oxygenTanks.physicsBodyType = Phaser.Physics.ARCADE; 
 
   //  The score
-  scoreText = game.add.text(scorePositionX, scorePositionY, 'score: 0', { fontSize: scoreFontSize, fill: scoreColor });
+  scoreText = game.add.text(scorePositionX, scorePositionY, 'Score: 0', { fontSize: scoreFontSize, fill: scoreColor });
   //  The depth
-  depthText = game.add.text(gameWidth - 200, scorePositionY, 'Depth: 9999m', {fontSize: '32px', fill: '#aa0'});
+  depthText = game.add.text(depthPositionX, depthPositionY, 'Depth: 9999m', {fontSize: depthFontSize, fill: depthColor});
   //  Our controls.
   cursors = game.input.keyboard.createCursorKeys();
-/*
-  // create a group for our lines
-  linesGroup = game.add.group();
-  linesGroup.enableBody = true;
-  linesGroup.physicsBodyType = Phaser.Physics.ARCADE;
-  // linesGroup.body.velocity.y= 30;
 
-  // created on the world
-  let graphics = this.game.add.graphics(0,10); // adds to the world stage
-  graphics.lineStyle(2, 0xFFFFFF, 1);
-  graphics.lineTo(gameWidth, 1);
-  linesGroup.add(graphics) // moves from world stage to group as a child
-  // create an instance of graphics, then add it to a group
-  let graphics2 = this.game.make.graphics();
-  graphics2.lineStyle(2, 0xFFFFFF, 1);
-  //graphics2.drawRect(500, 200, 250, 250);
-  linesGroup.add(graphics2); // added directly to the group as a child
-*/
+  // createLine(10,50,10,(gameHeight-200), 0);
+  // createLine(20,gameHeight-100,30,gameHeight-100,0,1);
+  // createLine(topX1, currentDepthMarker, topX2 , currentDepthMarker, 0,1);
+  // createLine(0,gameHeight-100, 10, 50, 0,20);
+  let graphics = game.add.graphics(0,0);
+
+  graphics.lineStyle(1, 0x000066, 2);
+  graphics.moveTo(topX1,topY);
+  graphics.lineTo(topX1,lengthOfBar+topY);
+  // graphics.lineTo(topX2+1,lengthOfBar+topY);
+  // graphics.moveTo(topX2+1,topY);
+  // graphics.lineTo(topX1,topY);
+  for(let i=topY; i<=lengthOfBar+topY;i=i+5){
+    graphics.moveTo(topX1,i);
+    graphics.lineTo(topX2,i);
+    console.log(i);
+  }
+  // graphics.destroy();
 }
 
 function update() {
   depth -= 1;
   counter= counter+1;
+  currentDepthMarker = Math.round((lengthOfBar/finalDepth)*depth + topY);
+  if(currentDepthMarker == oldDepthMarker-5){
+    // console.log(currentDepthMarker);
+    createLine(topX1, currentDepthMarker, topX2 , currentDepthMarker, 0,2, 0x00d955);
+    oldDepthMarker = currentDepthMarker;
+  }
+  if(depth<=0){
+    alert('Congratulations adventurer. You have reached the surface.');
+    game.paused = true;
+  }
+  
   //  scrolling the background
   ocean.tilePosition.y += backgroundVelocity;
 
@@ -149,8 +180,7 @@ function update() {
 
   //line denoting the level appears
   if(depth ==firstLevelDepth+50 || depth ==secondLevelDepth){
-    createLine();
-    console.log("line falls");
+    levelLine = createLine(0,0,gameWidth,0,100,4, 0xffd9ff);
   }
 
   // Checks to see if the player overlaps with any of the stars or enemies or oxygen tanks or lines
@@ -161,12 +191,12 @@ function update() {
   
   // creating stars    
   if(Math.random() > rarityOfSpawningStars){
-    var star = stars.create(Math.random()*gameWidth + 2, 0, 'star');       
+    var star = stars.create(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'star');       
     star.body.velocity.y = 50;
   }
   //creating enemies
   if(Math.random() > rarityOfSpawningEnemies){
-    createEnemy(Math.random()*gameWidth, 0, 'bsquadron');
+    createEnemy(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'bsquadron');
   }
   //creating OxygenTanks
   if(Math.random() >rarityOfSpawningOxygenTanks){
@@ -204,19 +234,24 @@ function update() {
   }
 }
 
-function createLine(){
-  var graphics = game.add.graphics(0,0);
-  graphics.lineStyle(2, 0xffd9ff,1);
-  // graphics.moveTo(0,50);
-  graphics.lineTo(gameWidth ,0);
-  levelLine = game.add.sprite(0,0, graphics.generateTexture());
-  // levelLine.anchor.set(0);
+function createLine(initialX, initialY, finalX, finalY, speed, width, color){
+  let graphics = game.add.graphics(0,0);
+  let line;
+  graphics.lineStyle(width, color,2);
+  graphics.moveTo(initialX,initialY);
+  graphics.lineTo(finalX , finalY);  //gamewidth, 0
+  line = game.add.sprite(initialX,initialY, graphics.generateTexture());
+  // line.anchor.set(0,0);
   // levelLines.add(levelLine);
   graphics.destroy();
-  game.physics.arcade.enable(levelLine);
-  levelLine.body.velocity.y = levelLineSpeed;
-
+  if(speed){
+    game.physics.arcade.enable(line);
+    line.body.velocity.y = speed;
+  }
+  return line;
+  
 }
+
 function createOxygenTank () {  
   oxygenTank = oxygenTanks.create( 0,  0, 'oxygen');
   oxygenTank.anchor.setTo(0.5, 0.5);
@@ -234,12 +269,9 @@ function createEnemy (x, y, typeOfEnemy) {
   enemy.x= x;
   enemy.y= y;
   enemy.body.velocity.y = 100;
-
   //making the enemies patrol horizontally
   //var tween = game.add.tween(enemy).to( {x: x+400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
   //enemy.body.collideWorldBounds = true;
-
-  
 }
 
 
