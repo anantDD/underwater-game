@@ -1,7 +1,7 @@
 var allDisplayBoxes;
 var allValuesInsideDisplayBox ;
 var allBorrowButtons;
-var totalDigits = 3;
+var totalDigits = 4;
 var placeValue;   // value changes from 3,2,1,0 representing units, tens, hundreds and thousands places respectively.
 var activeBoxColor = 'orange';
 var minuendArr = [];
@@ -199,7 +199,7 @@ function makeResult(n){
   var html='';
   html+='<div class="shiftLeft"><button onclick="changePlaceValueForward()"><<</button></div>';
   for (let i=0; i<n; i++){
-    html+='<div class="box"><span class="valueOfBox">9</span></div>';
+    html+='<div class="box"><span class="valueOfBox">X</span></div>';
   }
   html+='<div class="shiftRight"><button onclick="changePlaceValueBackward()">>></button></div>';
   $('#resultSubtraction').html(html);

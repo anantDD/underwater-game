@@ -6,14 +6,20 @@ el.style.width = gameWidth + "px" ;
 
 var backgroundVelocity = 1.5;
 
-var firstLevelDepth = 900;
-var secondLevelDepth = 200;
+var currentLevel = 0;
+var mainLevelDepths =[10000,7500,5000,2500]
+
+var firstLevelDepth = finalDepth;
+var secondLevelDepth = firstLevelDepth-(finalDepth+1)/4;
+var thirdLevelDepth = secondLevelDepth-(finalDepth+1)/4
+var fourthLevelDepth = thirdLevelDepth-(finalDepth+1)/4
 var finalDepth = 9999;
+var depth = finalDepth;
+var enemyArray=['starfish','turtle','nemo', 'jellyfish', 'shark', 'bluewhale'];
 
-
-var starVelocity = 50;
+var pearlVelocity = 50;
 var monsterVelocity = 20;
-var rarityOfSpawningStars = 0.99;       // the higher the more rare. values between 0 and 1
+var rarityOfSpawningPearls = 0.99;       // the higher the more rare. values between 0 and 1
 var rarityOfSpawningEnemies = 0.99;     // the higher the more rare. values between 0  and 1
 var rarityOfSpawningOxygenTanks = 0.999;
 //PLAYER
@@ -33,8 +39,8 @@ var scorePositionX = gameWidth - 100;
 var scorePositionY = 16;
 var scoreColor = '#ffffff';
 var scoreFontSize = '16px';
-var scoreIncreasePerStar = 10;
-
+var scoreIncreasePerPearl = 10;
+var score = 0;
 //DEPTH Display
 var depthPositionX = 0;
 var depthPositionY = 16;
@@ -61,32 +67,36 @@ var oxygenLeft=100;
 var xBeginSpawnPoint = topX2 +3;
 var xEndSpawnPoint = gameWidth -10;
 var yBeginSpawnPoint = 0;
-var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update, render: render });
-
-function preload() {
-  game.load.image('ocean', 'assets/591.jpg');
-  game.load.image('ground', 'assets/platform.png');
-  game.load.image('star', 'assets/star.png');
-  game.load.image('diamond','assets/diamond.png');
-  game.load.image('bsquadron', 'assets/3703.png');
-  game.load.image('oxygen','assets/firstaid.png');
-  game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);  //https://www.artstation.com/artwork/e4eED
-
-}
 
 var player;
 var levelLine;
 var platforms;
 var cursors;
 var ocean;
-var stars;
+var pearls;
 var alien;
-var score = 0;
+
 var scoreText;
-var depth = finalDepth;
+
 var depthText;
 var lineS;
+var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update, render: render });
 
+function preload() {
+  game.load.image('ocean', 'assets/591.jpg');
+  game.load.image('ground', 'assets/platform.png');
+  game.load.image('pearl', 'assets/star.png');
+  // game.load.image('diamond','assets/diamond.png');
+  // game.load.image('oxygen','assets/firstaid.png');
+  game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);  //https://www.artstation.com/artwork/e4eED
+  game.load.image('starfish', 'assets/starfish.png');
+  game.load.image('turtle','assets/turtle.jpg');
+  game.load.image('nemo','assets/nemo.jpg');
+  game.load.image('jellyfish','assets/jellyfish.jpg');
+  game.load.image('shark','assets/shark.png');
+  game.load.image('bluewhale','assets/bluewhale.jpg');
+
+}
 
 function create() {
 
@@ -95,32 +105,24 @@ function create() {
 
   //  A simple background for our game
   ocean =game.add.tileSprite(0, 0, gameWidth, gameHeight, 'ocean');
-  // ocean.anchor.setTo(100,100);
-  //  The platforms group contains the ground and the 2 ledges we can jump on
-  platforms = game.add.group();
-  //  We will enable physics for any object that is created in this group
-  platforms.enableBody = true;
 
+  //healthbar
   var barConfig = {x: gameWidth/2, y: gameHeight-10, width:gameWidth-100, height:10};
   this.myHealthBar = new HealthBar(this.game, barConfig);
   
-  
   // The player and its settings
   player = game.add.sprite(playerInitialPositionX, playerInitialPositionY, 'dude');
-  //  We need to enable physics on the player
   game.physics.arcade.enable(player);
   player.body.collideWorldBounds = true;
-  // player.body.gravity.y = 50;
-
-  //  Our two animations, walking left and right.
-  player.animations.add('left', [0, 1, 2, 3,4,5,6,7], playerFrameRate, true);  //(name,frames,frameRate,loop)
-  player.animations.add('right', [8,9,10,11,12,13,14,15], playerFrameRate, true);
   player.body.setSize(90, 40 , 0, 25); // setting the collision area for the enemies. setSize(height, width, offsetX, offsetY)
 
+  //  Our two animations, swimming left and right.
+  player.animations.add('left', [0, 1, 2, 3,4,5,6,7], playerFrameRate, true);  //(name,frames,frameRate,loop)
+  player.animations.add('right', [8,9,10,11,12,13,14,15], playerFrameRate, true);
 
-  //  Stars to collect
-  stars = game.add.group();
-  stars.enableBody = true;
+  //  pearls to collect
+  pearls = game.add.group();
+  pearls.enableBody = true;
 
   //  Enemies
   enemies= game.add.group();
@@ -150,7 +152,6 @@ function update() {
   oxygenLeft= clampOxygen(oxygenLeft-0.1);
   if(oxygenLeft===0){
     oxygenReachedZero();
-
   }
   currentDepthMarker = Math.round((lengthOfBar/finalDepth)*depth + topY);
   if(currentDepthMarker == oldDepthMarker-5){
@@ -163,8 +164,10 @@ function update() {
     game.paused = true;
   }
   if(depth%10==0){
-
     this.myHealthBar.setPercent(oxygenLeft);
+  }
+  if(mainLevelDepths.includes(depth)){
+    levelUp();
   }
   
   //  scrolling the background
@@ -177,29 +180,30 @@ function update() {
   depthText.text= 'Depth: ' + depth + 'm';
 
   //line denoting the level appears
-  if(depth ==firstLevelDepth+50 || depth ==secondLevelDepth){
+  if((depth)%500 == 0){
     levelLine = createLine(0,0,gameWidth,0,100,4, 0xffd9ff);
   }
 
-  // Checks to see if the player overlaps with any of the stars or enemies or oxygen tanks or lines
-  game.physics.arcade.overlap(player, stars, collectStar, null, this);
+  // Checks to see if the player overlaps with any of the pearls or enemies or oxygen tanks or lines
+  game.physics.arcade.overlap(player, pearls, collectPearl, null, this);
   game.physics.arcade.overlap(player, enemies, deathByEnemies, null, this);
-  game.physics.arcade.overlap(player, oxygenTanks, collectOxygen, null, this);
-  game.physics.arcade.overlap(player, levelLine, levelReached, null, this);
+  // game.physics.arcade.overlap(player, oxygenTanks, collectOxygen, null, this);
+  game.physics.arcade.overlap(player, levelLine, oxygenStationReached, null, this);
   
-  // creating stars    
-  if(Math.random() > rarityOfSpawningStars){
-    var star = stars.create(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'star');       
-    star.body.velocity.y = 50;
+  // creating pearls    
+  if(Math.random() > rarityOfSpawningPearls){
+    var pearl = pearls.create(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'pearl');       
+    pearl.body.velocity.y = 50;
   }
   //creating enemies
   if(Math.random() > rarityOfSpawningEnemies){
-    createEnemy(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'bsquadron');
+    let monsterSelector=Math.floor(Math.random()*(3+currentLevel));
+    createEnemy(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, enemyArray[monsterSelector]);
   }
   //creating OxygenTanks
-  if(Math.random() >rarityOfSpawningOxygenTanks){
-     createOxygenTank();
-  }
+  // if(Math.random() >rarityOfSpawningOxygenTanks){
+     // createOxygenTank();
+  // }
  
   //  Keys for player movement.
   if (cursors.left.isDown )
@@ -277,7 +281,7 @@ function createOxygenTank () {
   //oxygenTank.body.collideWorldBounds = true;
 }
 
-function createEnemy (x, y, typeOfEnemy) {
+function createEnemy (x, y, typeOfEnemy, velocity) {
   enemy = enemies.create(x, y, typeOfEnemy);
   enemy.anchor.setTo(0.5,0.5);
 
@@ -294,23 +298,18 @@ function createEnemy (x, y, typeOfEnemy) {
 
 
 
-function collectStar (player, star) {
-  star.kill();
+function collectPearl (player, pearl) {
+  pearl.kill();
   //  Add and update the score
-  score += scoreIncreasePerStar;
+  oxygenLeft=clampOxygen(oxygenLeft+20);
+  score += scoreIncreasePerPearl;
   scoreText.text = 'Score: ' + score;
 
 }
 
 function deathByEnemies (player, enemy){
   enemy.kill();
-  console.log("YOU DIED.")
-}
-
-function collectOxygen (player, oxygen){
-  oxygen.kill();
-  oxygenLeft=clampOxygen(oxygenLeft+20);
-  console.log("Oxygen increased by 10%");
+  oxygenLeft=clampOxygen(oxygenLeft-20);
 }
 
 function onSwipe() {
@@ -319,8 +318,8 @@ function onSwipe() {
    game.input.activePointer.duration < 250);
 }
 
-function levelReached(){
-  console.log("answer this question");
+function oxygenStationReached(){
+
   levelLine.kill();
   // el = document.getElementById("overlay");
   openMathsProblemScreen();
@@ -349,7 +348,29 @@ function clampOxygen(val) {
 }
 
 function oxygenReachedZero(){
+  // graphics.destroy();
   alert('Valar Morghulis');
+
   game.paused = true;
 }
 
+function levelUp(){
+  currentLevel++;
+  monsterVelocity+=20;
+  changeSoundFile();
+  // setupLevel();
+}
+
+function setupLevel(level){
+  switch (currentLevel){
+    case 1:
+        monsterVelocity+= 20;
+        break;
+    case 2:
+        break;
+  }
+}
+
+function changeSoundFile(){
+
+}
