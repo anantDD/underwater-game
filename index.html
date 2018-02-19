@@ -9,23 +9,51 @@
   <link rel="stylesheet" type="text/css" href="main.css">
 	<!-- <script type="text/javascript" src="js/Phaser.min.js"></script> -->
 	   <!-- <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script> -->
+     <script type="text/javascript" src="js/phaser.min.js">
+     </script> 
+     <script type="text/javascript" src="js/jquery-3.3.1.min.js">
+     </script> 
+     <script type="text/javascript" src="js/HealthBar.standalone.js">
+     </script>
+ 
+
+     
+  <!-- <script type="text/javascript" src="assets/Leve2.js"></script>    -->
+  <!-- <script type="text/javascript" src="assets/Leve3.js"></script>    -->
+  <!-- <script type="text/javascript" src="assets/Leve4.js"></script>    -->
+
+  <script>
+    var game;
+    window.onload = function(){
+      // var game = new Phaser.Game(800,600, Phaser.CANVAS,'');
+     
+      let e2=document.getElementById('gameDiv');
+      e2.style.width = gameWidth + "px" ;
+      game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv');
+
+      game.state.add('Boot',Game.Boot);
+      game.state.add('Preloader',Game.Preloader);
+      game.state.add('MainMenu',Game.MainMenu);
+      game.state.add('main',Game.levelState);
+      // game.state.add('Level2',Game.Level1);
+      // game.state.add('Level3',Game.Level1);
+      // game.state.add('Level4',Game.Level1);
+
+      game.state.start('Boot');
+
+    }
+  </script>
   <script>
 		
     function overlay(html) {
-      el = document.getElementById("overlay");
+      var el = document.getElementById("overlay");
       
       el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
     		window.scrollTo(0, 0);
     		game.paused= false;
 	}
   </script>	
-  <script type="text/javascript" src="js/phaser.min.js">
-  </script> 
-  <script type="text/javascript" src="js/jquery-3.3.1.min.js">
-  </script> 
-  <script type="text/javascript" src="js/HealthBar.standalone.js">
-  </script>
-  <script type="text/javascript" src="js/constants.js"></script>
+ 
 
   <!-- <script type="text/javascript" src="../phaser.js">  </script> -->
   <!-- <script type="text/javascript" src="../jquery-3.3.1.js"></script> -->
@@ -74,8 +102,16 @@
       </div>
 	  </div>
 	</div>
-	<script type="text/javascript" src="js/mathScreen.js"></script>	
-  <script type="text/javascript" src="js/main.js">
-  </script>	
+
+  <script type="text/javascript" src="js/mathScreen.js"></script> 
+  <!-- <script type="text/javascript" src="js/main.js"> -->
+  </script> 
+  <script type="text/javascript" src="js/Boot.js"></script>   
+  <script type="text/javascript" src="js/Preloader.js"></script>
+  <script type="text/javascript" src="js/mainMenu.js"></script>   
+   
+  <script type="text/javascript" src="js/constants.js"></script> 
+  <script type="text/javascript" src="js/levelData.js"></script>  
+  <script type="text/javascript" src="js/levelState.js"></script>
 </body>
 </html>

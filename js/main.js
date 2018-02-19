@@ -1,6 +1,3 @@
-var gameHeight= window.innerHeight;
-var gameWidth= window.innerWidth>400 ? 400 : window.screen.availWidth;
-
 let el=document.getElementById('gameDiv');
 el.style.width = gameWidth + "px" ;
 
@@ -80,21 +77,8 @@ var scoreText;
 
 var depthText;
 var lineS;
-var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'gameDiv', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-  game.load.image('ocean', 'assets/591.jpg');
-  game.load.image('ground', 'assets/platform.png');
-  game.load.image('pearl', 'assets/star.png');
-  // game.load.image('diamond','assets/diamond.png');
-  // game.load.image('oxygen','assets/firstaid.png');
-  game.load.spritesheet('dude', 'assets/scuba3.png', playerFrameWidth, playerFrameHeight);  //https://www.artstation.com/artwork/e4eED
-  game.load.image('starfish', 'assets/starfish.png');
-  game.load.image('turtle','assets/turtle.jpg');
-  game.load.image('nemo','assets/nemo.jpg');
-  game.load.image('jellyfish','assets/jellyfish.jpg');
-  game.load.image('shark','assets/shark.png');
-  game.load.image('bluewhale','assets/bluewhale.jpg');
 
 }
 

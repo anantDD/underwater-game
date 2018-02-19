@@ -121,6 +121,15 @@ HealthBar.prototype.setPercent = function(newValue){
     this.setWidth(newWidth);
 };
 
+HealthBar.prototype.setPercentHeight = function(newValue){
+    if(newValue < 0) newValue = 0;
+    if(newValue > 100) newValue = 100;
+
+    var newHeight =  (newValue * this.config.height) / 100;
+
+    this.setHeight(newHeight);
+};
+
 /*
  Hex format, example #ad3aa3
  */
@@ -145,6 +154,11 @@ HealthBar.prototype.setBarColor = function(newColor) {
 HealthBar.prototype.setWidth = function(newWidth){
     this.game.add.tween(this.barSprite).to( { width: newWidth }, this.config.animationDuration, Phaser.Easing.Linear.None, true);
 };
+HealthBar.prototype.setHeight = function(newHeight){
+    this.game.add.tween(this.barSprite).to( { height: newHeight }, this.config.animationDuration, Phaser.Easing.Linear.None, true);
+};
+
+
 
 HealthBar.prototype.setFixedToCamera = function(fixedToCamera) {
     this.bgSprite.fixedToCamera = fixedToCamera;
