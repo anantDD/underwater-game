@@ -14,6 +14,10 @@ Game.Preloader.prototype ={
 		this.load.image('bluewhale','assets/bluewhale.jpg');
 		this.load.image('titleScreen','assets/scary-jellyfish.gif');
 		this.load.image('button','assets/button.png');
+		this.load.image('oxygenGround','assets/2048x48-ground.png');
+		this.load.audio('music-level-1','assets/CatAstroPhi.wav');
+		this.load.audio('music-level-2','assets/POL-carried-away-short.wav');
+
 
 	},
 	create:function(){

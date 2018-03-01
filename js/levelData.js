@@ -7,7 +7,9 @@ var lvlData = [
 		numberOfEnemies: 3,
 		enemyDamage: 20,
 		increaseInOxygenByPearls: 20,
-		depthIncrease : 10
+		depthIncrease : 0.5,
+		backgroundMusic: 'music-level-1',
+		rateOfOxygenDepletion : 0.05
 	},
 	{
 		startingDepth: 2500,
@@ -17,7 +19,9 @@ var lvlData = [
 		numberOfEnemies: 4,
 		enemyDamage: 20,
 		increaseInOxygenByPearls: 20,
-		depthIncrease: 10
+		depthIncrease: 0.4,
+		backgroundMusic: 'music-level-2',
+		rateOfOxygenDepletion : 0.05
 
 	},
 	{
@@ -28,8 +32,9 @@ var lvlData = [
 		numberOfEnemies: 5,
 		enemyDamage: 20,
 		increaseInOxygenByPearls: 20,
-		depthIncrease: 10
-
+		depthIncrease: 0.3,
+		backgroundMusic: 'music-level-1',
+		rateOfOxygenDepletion : 0.05
 	},
 	{
 		startingDepth: 7500,
@@ -39,9 +44,10 @@ var lvlData = [
 		numberOfEnemies: 6,
 		enemyDamage: 20,
 		increaseInOxygenByPearls: 20,
-		depthIncrease: 10
+		depthIncrease: 0.2,
+		backgroundMusic: 'music-level-2',
+		rateOfOxygenDepletion : 0.05
 	
-
 	}
 ]
 	

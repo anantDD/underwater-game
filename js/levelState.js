@@ -1,5 +1,6 @@
 var scoreWhenLevelBegins = [0,0,0,0];
 var scoreInLevels = [0,0,0,0];
+var currentDepth=0;
 
 Game.levelState=function(game){
   // this.levelIndex= 0;
@@ -22,6 +23,8 @@ Game.levelState=function(game){
   this.ocean;
   this.pearls;
   this.alien;
+  this.oxygenGround;
+  this.rateOfOxygenDepletion;
 
   this.scoreText;
   this.levelText;
@@ -42,6 +45,10 @@ Game.levelState.prototype={
     this.oxygenLeft= 100;
     this.depthIncrease = this.levelparams.depthIncrease;
     this.distanceBetweenOxygenStops = Math.round(2500/this.levelparams.numberOfStops);
+    this.musicPlayed = this.add.audio(this.levelparams.backgroundMusic); 
+    this.rateOfOxygenDepletion = this.levelparams.rateOfOxygenDepletion;
+
+    scoreWhenLevelBegins[this.levelIndex] = 0;
     for(let i=0; i<this.levelIndex; i++){
       scoreWhenLevelBegins[this.levelIndex]+= scoreInLevels[i];
     }
@@ -51,19 +58,25 @@ Game.levelState.prototype={
   },
   nextLevel:function() {
     console.log(this.score, 'a', scoreInLevels[this.levelIndex])
+    this.musicPlayed.stop();
     scoreInLevels[this.levelIndex]= this.score;
     this.levelIndex++;
     this.state.start('main'); // just restart the same state
   },
 
   restartLevel:function(){
+    this.musicPlayed.stop();
     this.state.start('main')
+
   },
 
   create:function(){
     console.log(this);
     this.loadLevel();
-        console.log(this.distanceBetweenOxygenStops);
+    console.log(this.distanceBetweenOxygenStops);
+
+
+    this.musicPlayed.play('',0,1,true);
 
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -99,6 +112,10 @@ Game.levelState.prototype={
     enemies= this.add.group();
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
+
+    this.oxygenGrounds=this.add.group();
+    this.oxygenGrounds.enableBody=true;
+    this.oxygenGrounds.outOfBoundsKill = true;
     // enemies.createMultiple(1, 'jellyfish');
     // enemies.createMultiple(1, 'starfish');
 
@@ -159,71 +176,66 @@ Game.levelState.prototype={
 
       }
     }
-    console.log(n);
   },
 
   update:function(){
 
     this.depth +=this.depthIncrease;
-    this.oxygenLeft= clampOxygen(this.oxygenLeft-0.05);
+    this.oxygenLeft= clampOxygen(this.oxygenLeft-this.rateOfOxygenDepletion);
     this.ocean.tilePosition.y += backgroundVelocity;
     this.player.body.velocity.x = 0;
     depthText.text= 'Depth: ' + Math.round(this.depth) + 'm';
+
+    if(answeredCorrectly){
+      this.oxygenLeft=100;
+      answeredCorrectly=false;
+    }
+
 
     //when oxygen reaches 0
     if(this.oxygenLeft===0){
       console.log('restarting');
       this.restartLevel();
     }
-    //when the depth in levels 1,2 and 3 becomes equal to the starting depth of the next level
+    //game finished
     if(this.depth>=finalDepth){
         game.paused = true;
         alert('Congratulations adventurer. You have reached the surface.');
     }
+
+    //when the depth in levels 1,2 and 3 becomes equal to the starting depth of the next level
     if(this.levelIndex<(lvlData.length-1) && this.depth >= lvlData[(this.levelIndex + 1)].startingDepth){
       this.nextLevel();
     }
-    //game finished
     
-
     //filling up the depth bar
-    this.currentDepthMarker = lengthOfBar +topY - Math.round(lengthOfBar*(this.depth/finalDepth)) ;
-          // console.log(this.currentDepthMarker);
 
-    // if(this.currentDepthMarker == this.oldDepthMarker-5){
-    if(Math.round(this.depth)%10==0){
-      // console.log(this.currentDepthMarker);
-      createLine(topX1-1, this.currentDepthMarker-1, topX2-1 , this.currentDepthMarker-1, 0,2, 0xffd955);
+    if(Math.round(this.depth)%200==0){
+      this.currentDepthMarker = lengthOfBar +topY - Math.round(lengthOfBar*(this.depth/finalDepth)) ;
+      createLine(topX1-9, this.currentDepthMarker-9, topX2-9 , this.currentDepthMarker-9, 0,10, 0xffd955);
       this.oldDepthMarker = this.currentDepthMarker;
     }
-    // if(this.depth>=9999){
-    //   alert('Congratulations adventurer. You have reached the surface.');
-    //   this.paused = true;
-    // }
+
     if(Math.round(this.depth)%10==0){
       this.myHealthBar.setPercent(this.oxygenLeft);
     }
-    // if(Math.round(this.depth)%100==0){
-    //   // this.myDepthBar.setPercent((this.depth/finalDepth)*100);
-    //       this.myDepthBar.setPercentHeight((this.depth/finalDepth)*100);
 
-    // }
-
-    // this.myDepthBar.setPercentHeight((this.depth/finalDepth)*100);
-    // if(depthsOfLevels.includes(this.depth)){
-    //   levelUp();
-    // }
-
-    //oxygenStation line appears
+    //oxygenStation appears
     if(Math.round(this.depth)%this.distanceBetweenOxygenStops == 0){
-      this.levelLine = createLine(0,0,gameWidth,0,100,4, 0xffd9ff);
+      // this.levelLine = createLine(0,0,gameWidth,0,100,4, 0xffd9ff);
+      this.oxygenGround = this.oxygenGrounds.create(0,0,'oxygenGround');
+      this.oxygenGround.body.velocity.y= 500;
     }
 
     // Checks to see if the player overlaps with any of the pearls or enemies or oxygen tanks or lines
+
     game.physics.arcade.overlap(this.player, this.pearls, collectPearl, null, this);
     game.physics.arcade.overlap(this.player, enemies, damagedByEnemies, null, this);
-    this.physics.arcade.overlap(this.player, this.levelLine, oxygenStationReached, null, this);
-    
+    this.physics.arcade.overlap(this.player, this.oxygenGround, oxygenStationReached, null, this);
+    // // this.physics.arcade.overlap(this.player, this.levelLine, oxygenStationReached, null, this);
+    this.physics.arcade.overlap(this.oxygenGround,this.pearls, function(ground,pearl){pearl.kill()},null,this);
+    this.physics.arcade.overlap(this.oxygenGround,enemies, function(ground,enemy){enemy.kill()},null,this);
+
     // creating pearls    
     if(Math.random() > rarityOfSpawningPearls){
       this.pearl = this.pearls.create(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, 'pearl');       
@@ -233,6 +245,9 @@ Game.levelState.prototype={
     if(Math.random() > rarityOfSpawningEnemies){
       let monsterSelector=this.levelIndex + Math.floor(Math.random()*3);
       createEnemy(Math.random()*(xEndSpawnPoint - xBeginSpawnPoint) + xBeginSpawnPoint, yBeginSpawnPoint, typesOfEnemies[monsterSelector]);
+      // console.log(enemies.countLiving());
+      // console.log(enemies.countDead());
+
     }
 
     //  Keys for player movement.
@@ -313,18 +328,23 @@ function damagedByEnemies (player, enemy){
   this.oxygenLeft=clampOxygen(this.oxygenLeft-20);
 }
 
+function fillOxygenForCorrectAnswer(){
+  this.oxygenLeft=100;
+}
+
 function onSwipe() {
   return (Phaser.Point.distance(game.input.activePointer.position, game.input.activePointer.positionDown) > 150 &&
    game.input.activePointer.duration > 100 &&
    game.input.activePointer.duration < 250);
 }
 
-function oxygenStationReached(){
-  this.levelLine.kill();
+function oxygenStationReached(depth){
+  this.oxygenGround.kill();
   console.log('asd');
-  // el = document.getElementById("overlay");
-  // openMathsProblemScreen();
-  // game.paused = true;
+  currentDepth = this.depth;
+  el = document.getElementById("overlay");
+  openMathsProblemScreen();
+  game.paused = true;
 }
 function clampOxygen(val) {
     let max=100;

@@ -50,6 +50,7 @@
       
       el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
     		window.scrollTo(0, 0);
+
     		game.paused= false;
 	}
   </script>	
@@ -92,13 +93,17 @@
 	  	  </div>
   		</div> 
       <div id="submitScreen">
-        <p>
+        <p class="submitAnswer">
           Your answer is <span class="answer"></span>
           <br>
           Submit answer?
-          <button class="close" onclick="exitMathsScreenAndResumeGame()">Yes</button>
-          <button class="close" onclick="closeSubmitScreen()">No</button>
+          <button class="closeYes" onclick="exitMathsScreenAndResumeGame()">Yes</button>
+          <button class="closeNo" onclick="closeSubmitScreen()">No</button>
         </p>
+        <p class="wrongAnswerGiven" style="visibility: hidden;">
+            Wrong Answer. Please go back and try again.</br>
+            <button onclick="closeSubmitScreen()">Try Again</button>
+        </p>    
       </div>
 	  </div>
 	</div>

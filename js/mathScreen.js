@@ -8,6 +8,9 @@ var minuendArr = [];
 var resultArr = new Array(totalDigits);
 var tempMinuendArr = [];
 var borrowRequired = false;
+var usersAnswer;
+var correctAnswer;
+var answeredCorrectly = false;
 
 //click event for all NUMBER Buttons
 $('#numberButtons button').on('click', function(){
@@ -31,6 +34,7 @@ $('body').on('click','.borrow', function(){ //had to be written like this since 
 });
 
 function openMathsProblemScreen(){
+  answeredCorrectly = false;
   var html = "<button class = 'close' onclick = 'overlay()'></button><ul>"; 
   overlay(html);
   initializeDisplay();
@@ -207,7 +211,8 @@ function makeResult(n){
 
 function initializeDisplay(){
   placeValue = totalDigits -1;
-  let result = finalDepth - depth;
+  let result = finalDepth - currentDepth;
+  correctAnswer = result;
   minuendArr = splitNumber(finalDepth);
   tempMinuendArr = splitNumber(finalDepth);
 
@@ -222,7 +227,7 @@ function initializeDisplay(){
 
   
   fillBoxesWithValues(finalDepth, 'minuend');
-  fillBoxesWithValues(depth, 'subtrahend');
+  fillBoxesWithValues(currentDepth, 'subtrahend');
 
   makeTheRelevantBoxesActive();
 }
@@ -244,15 +249,31 @@ function disableBorrowButtonForZeroValues(){
 }
 
 function openSubmitScreen(){
+  usersAnswer= resultArr.join('');
   $('#submitScreen').css('visibility', 'visible');
-  $('#submitScreen p .answer').html(resultArr.join(''));
+  $('#submitScreen .submitAnswer').css('visibility', 'visible');
+  $('#submitScreen .wrongAnswerGiven').css('visibility', 'hidden');  
+  $('#submitScreen p .answer').html(usersAnswer);
+
 }
 
 function closeSubmitScreen(){
   $('#submitScreen').css('visibility', 'hidden');
+  $('#submitScreen .wrongAnswerGiven').css('visibility', 'hidden');  
+  $('#submitScreen .submitAnswer').css('visibility', 'hidden');
+   
 }
 
 function exitMathsScreenAndResumeGame(){
-  $('#submitScreen').css('visibility', 'hidden');
-  overlay();
+  if(usersAnswer == correctAnswer){
+    answeredCorrectly =true;
+    $('#submitScreen').css('visibility', 'hidden');
+    $('#submitScreen .wrongAnswerGiven').css('visibility', 'hidden');  
+    $('#submitScreen .submitAnswer').css('visibility', 'hidden');
+    overlay();
+  }else{
+    $('#submitScreen .submitAnswer').css('visibility', 'hidden');
+    $('#submitScreen .wrongAnswerGiven').css('visibility', 'visible');  
+  }
+  
 }
